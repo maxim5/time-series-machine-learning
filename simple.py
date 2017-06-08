@@ -23,9 +23,9 @@ def main():
     model = XgbModel(**params)
 
     print '\nModel=%s k=%d' % (model.__class__, k)
-
     model.fit(train_df)
     model.test(test_df)
+    print 'Cost=%.5f' % model.cost
 
 
 if __name__ == '__main__':
