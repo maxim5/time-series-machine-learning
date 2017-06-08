@@ -1,4 +1,5 @@
 data
+experimental
 
 *.py[cod]
 *$py.class
