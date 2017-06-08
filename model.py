@@ -16,6 +16,13 @@ class Model():
     self.cost = None
 
 
+  def session(self):
+    class Dummy:
+      def __enter__(self): pass
+      def __exit__(self, exc_type, exc_val, exc_tb): pass
+    return Dummy()
+
+
   def fit(self, train_df):
     x, y = to_dataset(train_df, self.k, target_column=self.target_column)
     self._fit(x, y)

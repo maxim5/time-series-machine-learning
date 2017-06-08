@@ -6,6 +6,7 @@ import numpy as np
 
 from data_util import read_df, to_changes, split_train_test
 from linear_model import LinearModel
+from nn_model import NeuralNetworkModel
 from xgboost_model import XgbModel
 
 
@@ -19,7 +20,7 @@ def select_best_model(source, iterations):
 
   for _ in xrange(iterations):
     k = np.random.randint(1, 10)
-    model_class = np.random.choice([LinearModel, XgbModel])
+    model_class = np.random.choice([LinearModel, XgbModel, NeuralNetworkModel])
 
     cost = run_model(model_class, k, train_df, test_df)
     if cost < min_cost:
@@ -40,9 +41,10 @@ def run_model(model_class, k, train_df, test_df):
 
   print '\nModel=%s k=%d' % (model_class.__name__, k)
   model = model_class(**params)
-  model.fit(train_df)
-  model.test(test_df)
-  print 'Cost=%.5f' % model.cost
+  with model.session():
+    model.fit(train_df)
+    model.test(test_df)
+    print 'Cost=%.5f' % model.cost
 
   return model.cost
 
