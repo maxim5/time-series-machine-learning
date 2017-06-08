@@ -2,20 +2,20 @@
 __author__ = 'maxim'
 
 
-import numpy as np
+from xgboost import XGBRegressor
 
 from model import Model
 
 
-class LinearModel(Model):
+class XgbModel(Model):
   def __init__(self, **params):
     Model.__init__(self, **params)
-    self._beta = None
+    self._model = XGBRegressor()
 
 
   def _fit(self, x, y):
-    self._beta = np.linalg.pinv(x.T.dot(x)).dot(x.T).dot(y)
+    self._model.fit(x, y)
 
 
   def predict(self, x):
-    return x.dot(self._beta)
+    return self._model.predict(x)
