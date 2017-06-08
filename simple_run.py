@@ -9,7 +9,7 @@ from linear_model import LinearModel
 from xgboost_model import XgbModel
 
 
-def select_best_model(source):
+def select_best_model(source, iterations):
   raw = read_df(source)
   changes = to_changes(raw)
   train_df, test_df = split_train_test(changes)
@@ -17,7 +17,7 @@ def select_best_model(source):
   min_cost = 1e100
   min_params = None
 
-  for _ in xrange(10):
+  for _ in xrange(iterations):
     k = np.random.randint(1, 10)
     model_class = np.random.choice([LinearModel, XgbModel])
 
@@ -58,7 +58,7 @@ def simple_run(source, model_class, ks):
 
 def main():
   # simple_run('data/BTC_ETH_30m.csv', XgbModel, [1, 2, 3, 4, 5])
-  select_best_model('data/BTC_ETH_30m.csv')
+  select_best_model('data/BTC_ETH_30m.csv', 10)
 
 
 if __name__ == '__main__':
