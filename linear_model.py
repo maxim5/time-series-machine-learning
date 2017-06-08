@@ -27,7 +27,7 @@ class LinearModel:
 
     prediction = self.predict(x)
     residuals = self.residuals(prediction, y)
-    print_residuals(residuals)
+    print_residuals(residuals, y)
 
 
   def predict(self, x):
@@ -42,7 +42,7 @@ class LinearModel:
     x, y = to_dataset(self._test_df, self.k, target_column=self.target_column)
     prediction = self.predict(x)
     residuals = self.residuals(prediction, y)
-    print_residuals(residuals)
+    print_residuals(residuals, y)
 
 
 def _linear_solve(x, y):
