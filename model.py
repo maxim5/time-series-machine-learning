@@ -28,8 +28,8 @@ class Model():
     self._fit(x, y)
 
     prediction = self.predict(x)
-    residuals, relative = self._residuals(prediction, y)
-    _print_residuals(residuals, relative)
+    residuals, relative, r2 = self._residuals(prediction, y)
+    _print_residuals(residuals, relative, r2)
 
 
   def _fit(self, x, y):
@@ -43,25 +43,27 @@ class Model():
   def test(self, test_df):
     x, y = to_dataset(test_df, self.k, target_column=self.target_column)
     prediction = self.predict(x)
-    residuals, relative = self._residuals(prediction, y)
-    _print_residuals(residuals, relative)
-    self.cost = self._cost_function(residuals, relative)
+    residuals, relative, r2 = self._residuals(prediction, y)
+    _print_residuals(residuals, relative, r2)
+    self.cost = self._cost_function(residuals, relative, r2)
 
 
   def _residuals(self, prediction, truth):
     residuals = self.residual_fun(prediction, truth)
     relative = residuals / np.maximum(np.abs(truth), 1e-3)
-    return residuals, relative
+    r2 = np.mean(np.power(prediction - truth, 2.0))
+    return residuals, relative, r2
 
 
-  def _cost_function(self, residuals, relative):
-    stats = pd.Series(relative).describe(percentiles=[0.9])
-    return stats['90%']
+  def _cost_function(self, residuals, relative, r2):
+    stats = pd.Series(relative).describe()
+    return stats['max']
 
 
-def _print_residuals(residuals, relative):
+def _print_residuals(residuals, relative, r2):
   print 'Raw residuals:      %s' % _series_stats(residuals)
   print 'Relative residuals: %s' % _series_stats(relative)
+  print 'R2=%.6f' % r2
 
 
 def _series_stats(series):
