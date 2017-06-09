@@ -54,22 +54,22 @@ def simple_run(source, model_class, ks):
 def main():
   # simple_run('data/BTC_ETH_30m.csv', NeuralNetworkModel, [1, 2, 3, 4, 5])
 
-  select_best_model(source='data/BTC_ETH_30m.csv',
+  select_best_model(source='data/BTC_ETH_2h.csv',
                     params_fun=lambda : {
                       'target_column': 'high',
                       'residual_fun': lambda pred, truth: np.maximum(pred - truth, 0),
 
                       'k': np.random.randint(1, 4),
                       'model_class': NeuralNetworkModel,
-                      'batch_size': np.random.choice([100, 200, 300, 400, 500]),
-                      'epochs': 40,
-                      'hidden_layer': np.random.randint(10, 30),
-                      'learning_rate': 10**np.random.uniform(-4.5, -2.0),
-                      'init_sigma': 10**np.random.uniform(-5.0, -3.0),
-                      'lambda': 10**np.random.uniform(-3.0, -1.0),
-                      'dropout': np.random.uniform(0.5, 0.95),
+                      'batch_size': np.random.choice([2000, 4000]),
+                      'epochs': 100,
+                      'hidden_layer': np.random.randint(40, 80),
+                      'learning_rate': 10**np.random.uniform(-5.0, -2.0),
+                      'init_sigma': 10**np.random.uniform(-7, -5),
+                      'lambda': 10**np.random.uniform(-10, -7),
+                      'dropout': np.random.uniform(0.1, 0.5),
                     },
-                    iterations=20)
+                    iterations=100)
 
 if __name__ == '__main__':
   main()
