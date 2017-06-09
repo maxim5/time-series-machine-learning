@@ -19,7 +19,7 @@ def read_df(file_name):
 def to_changes(raw):
   return pd.DataFrame({
     'date': raw.date,
-    'time': raw.date.astype(datetime.datetime).apply(lambda val: seconds(val) / 60),
+    'time': raw.date.astype(datetime.datetime).apply(lambda val: seconds(val) / (60*60*24)),
     'high': raw.high.pct_change(),
     'low': raw.low.pct_change(),
     'open': raw.open.pct_change(),
