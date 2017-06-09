@@ -57,7 +57,7 @@ class Model():
 
   def _cost_function(self, residuals, relative, r2):
     stats = pd.Series(relative).describe()
-    return stats['max']
+    return stats['mean'] + stats['max']
 
 
 def _print_residuals(residuals, relative, r2):
