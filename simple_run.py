@@ -23,6 +23,8 @@ def select_best_model(source, params_fun, iterations):
     if cost < min_cost:
       min_cost = cost
       min_params = params
+    if cost < 1.0:
+      print 'Promising!'
 
   print '\n***\nBest result:'
   print 'Cost=%.5f' % min_cost
@@ -57,13 +59,17 @@ def main():
                       'target_column': 'high',
                       'residual_fun': lambda pred, truth: np.maximum(pred - truth, 0),
 
-                      'k': np.random.randint(1, 10),
+                      'k': np.random.randint(1, 4),
                       'model_class': NeuralNetworkModel,
-                      'learning_rate': 10**np.random.uniform(-4, -2.5),
-                      'hidden_layer': np.random.randint(10, 20),
-                      'init_sigma': 10**np.random.uniform(-4, -2.5),
+                      'batch_size': np.random.choice([100, 200, 300, 400, 500]),
+                      'epochs': 40,
+                      'hidden_layer': np.random.randint(10, 30),
+                      'learning_rate': 10**np.random.uniform(-4.5, -2.0),
+                      'init_sigma': 10**np.random.uniform(-5.0, -3.0),
+                      'lambda': 10**np.random.uniform(-3.0, -1.0),
+                      'dropout': np.random.uniform(0.5, 0.95),
                     },
-                    iterations=10)
+                    iterations=20)
 
 if __name__ == '__main__':
   main()
