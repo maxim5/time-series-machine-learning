@@ -39,14 +39,14 @@ class NeuralNetworkModel(Model):
     W1 = tf.Variable(tf.random_normal(shape=[features, self._hidden_layer]) * self._init_sigma, name='W1')
     b1 = tf.Variable(tf.random_normal(shape=[self._hidden_layer]) * self._init_sigma, name='b1')
     layer1 = tf.matmul(x, W1) + b1
-    layer1 = tf.nn.elu(layer1, name='elu-alpha')
+    layer1 = tf.nn.relu(layer1)
     layer1 = dropout(layer1, tf.equal(mode, 'train'), keep_prob=self._dropout)
 
     W2 = tf.Variable(tf.random_normal(shape=[self._hidden_layer, 1]) * self._init_sigma, name='W2')
     b2 = tf.Variable(tf.random_normal(shape=[1]) * self._init_sigma, name='b2')
     output_layer = tf.matmul(layer1, W2) + b2
 
-    cost = tf.reduce_mean(tf.pow(output_layer - y, 2.0)) + self._lambda * (tf.nn.l2_loss(W1) + tf.nn.l2_loss(W2))
+    cost = tf.reduce_mean(tf.abs(output_layer - y)) + self._lambda * (tf.nn.l2_loss(W1) + tf.nn.l2_loss(W2))
     optimizer = tf.train.AdamOptimizer(self._learning_rate).minimize(cost)
 
     init = tf.global_variables_initializer()
@@ -69,4 +69,6 @@ class NeuralNetworkModel(Model):
 
 
 def dropout(incoming, is_training, keep_prob):
+  if keep_prob is None:
+    return incoming
   return tf.cond(is_training, lambda: tf.nn.dropout(incoming, keep_prob), lambda: incoming)
