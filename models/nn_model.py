@@ -47,7 +47,8 @@ class NeuralNetworkModel(Model):
     b2 = tf.Variable(tf.random_normal(shape=[1]) * self._init_sigma, name='b2')
     output_layer = tf.matmul(layer1, W2) + b2
 
-    cost = tf.reduce_mean(tf.abs(output_layer - y)) + self._lambda * (tf.nn.l2_loss(W1) + tf.nn.l2_loss(W2))
+    reg = self._lambda * (tf.nn.l2_loss(W1) + tf.nn.l2_loss(W2))
+    cost = tf.reduce_mean(tf.abs(output_layer - y)) + reg
     optimizer = tf.train.AdamOptimizer(self._learning_rate).minimize(cost)
 
     init = tf.global_variables_initializer()
