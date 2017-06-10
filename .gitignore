@@ -1,5 +1,6 @@
-data
-experimental
+data/*
+experimental/*
+_*/*
 
 *.py[cod]
 *$py.class

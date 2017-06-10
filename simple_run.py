@@ -3,45 +3,76 @@
 __author__ = 'maxim'
 
 
+import os
 import numpy as np
 
 from models import *
 from util import *
 
 
-def select_best_model(source, params_fun, iterations):
+class Processor:
+  def __init__(self, dest, start_limit):
+    self._dest = dest
+    self._min_cost = start_limit
+    self._min_params = None
+
+  def process(self, model, params):
+    cost = model.cost()
+    is_record = cost < self._min_cost
+    marker = '!!!' if is_record else '   '
+    info('%s Cost=%.6f' % (marker, cost))
+    if is_record:
+      self._min_cost = cost
+      self._min_params = params
+
+      dest_dir = self._dest % (params['target_column'], model.cost(), params['k'])
+      model.save(dest_dir)
+      self.save_stats(dest_dir, model)
+      self.save_params(dest_dir, **params)
+
+  def save_stats(self, dest_dir, model):
+    stats_file_name = os.path.join(dest_dir, 'stats.txt')
+    with open(stats_file_name, 'w') as file_:
+      file_.write(model.stats_str())
+      info('Stats   saved to %s' % stats_file_name)
+
+  def save_params(self, dest_dir, **params):
+    params_file_name = os.path.join(dest_dir, 'params.txt')
+    del params['residual_fun']
+    del params['model_class']
+    with open(params_file_name, 'w') as file_:
+      file_.write(smart_str(params))
+      info('Params  saved to %s' % params_file_name)
+
+  def print_result(self):
+    info('***')
+    info('Best result:')
+    info('Cost=%.5f' % self._min_cost)
+    info('Params=%s' % str(self._min_params))
+
+
+def select_best_model(source, dest, params_fun, iterations):
   raw = read_df(source)
   changes = to_changes(raw)
   train_df, test_df = split_train_test(changes)
 
-  min_cost = 1e100
-  min_params = None
-
+  processor = Processor(dest=dest, start_limit=1.0)
   for i in xrange(iterations):
     info('Iteration #%d' % (i+1))
     params = params_fun()
-    cost = run_model(train_df, test_df, **params)
-    if cost < min_cost:
-      min_cost = cost
-      min_params = params
-    if cost < 1.0:
-      info('Promising!')
-
-  info('***')
-  info('Best result:')
-  info('Cost=%.5f' % min_cost)
-  info('Params=%s' % str(min_params))
+    run_model(train_df, test_df, processor=processor, **params)
+  processor.print_result()
 
 
-def run_model(train_df, test_df, **params):
+def run_model(train_df, test_df, processor=None, **params):
   info('Params=%s' % str(params))
   model_class = params['model_class']
   model = model_class(**params)
   with model.session():
     model.fit(train_df)
     model.test(test_df)
-    info('Cost=%.6f' % model.cost)
-  return model.cost
+    if processor:
+      processor.process(model, params)
 
 
 def simple_run(source, model_class, ks):
@@ -56,22 +87,25 @@ def simple_run(source, model_class, ks):
 def main():
   # simple_run('data/BTC_ETH_30m.csv', NeuralNetworkModel, [1, 2, 3, 4, 5])
 
-  select_best_model(source='data/BTC_ETH_2h.csv',
-                    params_fun=lambda : {
-                      'target_column': 'high',
-                      'residual_fun': lambda pred, truth: np.maximum(pred - truth, 0),
+  for ticker in ['BTC_ETH_2h', 'BTC_DGB_2h']:
+    for target_column in ['high', 'low']:
+      select_best_model(source='data/%s.csv' % ticker,
+                        dest='_zoo/%s' % ticker + '__%s__c=%.6f__k=%d',
+                        params_fun=lambda : {
+                          'target_column': target_column,
+                          'residual_fun': lambda pred, truth: np.maximum(pred - truth, 0),
 
-                      'k': np.random.randint(1, 4),
-                      'model_class': NeuralNetworkModel,
-                      'batch_size': np.random.choice([2000, 4000]),
-                      'epochs': 100,
-                      'hidden_layer': np.random.randint(40, 80),
-                      'learning_rate': 10**np.random.uniform(-5.0, -2.0),
-                      'init_sigma': 10**np.random.uniform(-7, -5),
-                      'lambda': 10**np.random.uniform(-10, -7),
-                      'dropout': np.random.uniform(0.1, 0.5),
-                    },
-                    iterations=100)
+                          'k': np.random.randint(1, 4),
+                          'model_class': NeuralNetworkModel,
+                          'batch_size': np.random.choice([100, 200, 500, 1000]),
+                          'epochs': 50,
+                          'hidden_layer': np.random.randint(20, 80),
+                          'learning_rate': 10**np.random.uniform(-1.5, 0.2),
+                          'init_sigma': 10**np.random.uniform(-7, -2),
+                          'lambda': 10**np.random.uniform(-11, -6),
+                          'dropout': np.random.uniform(0.1, 0.9),
+                        },
+                        iterations=20)
 
 if __name__ == '__main__':
   main()

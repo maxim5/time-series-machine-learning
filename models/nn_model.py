@@ -3,6 +3,7 @@
 __author__ = 'maxim'
 
 
+import os
 import tensorflow as tf
 
 from model import Model
@@ -66,8 +67,17 @@ class NeuralNetworkModel(Model):
     self._mode = mode
     self._output_layer = output_layer
 
+
   def predict(self, test_x):
     return self._session.run(self._output_layer, feed_dict={self._x: test_x, self._mode: 'test'}).reshape((-1,))
+
+
+  def save(self, dest_dir):
+    os.makedirs(dest_dir)
+    path = os.path.join(dest_dir, 'session.data')
+    saver = tf.train.Saver()
+    saver.save(self._session, path)
+    info('Session saved to %s' % path)
 
 
 def dropout(incoming, is_training, keep_prob):

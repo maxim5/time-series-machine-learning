@@ -15,6 +15,7 @@ class Model():
     self._target_column = params.get('target_column')
     self._residual_fun = params.get('residual_fun')
     self._cost = None
+    self._stats = None
     self._with_bias = False
 
 
@@ -30,8 +31,8 @@ class Model():
     self._fit(x, y)
 
     prediction = self.predict(x)
-    residuals, relative, r2 = self._residuals(prediction, y)
-    _print_residuals(residuals, relative, r2)
+    stats = self._compute_stats(prediction, y)
+    _print_stats(stats)
 
 
   def _fit(self, x, y):
@@ -45,32 +46,52 @@ class Model():
   def test(self, test_df):
     x, y = to_dataset(test_df, self._k, target_column=self._target_column, with_bias=self._with_bias)
     prediction = self.predict(x)
-    residuals, relative, r2 = self._residuals(prediction, y)
-    _print_residuals(residuals, relative, r2)
-    self._cost = self._cost_function(residuals, relative, r2)
+    self._stats = self._compute_stats(prediction, y)
+    _print_stats(self._stats)
+    self._cost = self._cost_function(self._stats)
 
 
-  def _residuals(self, prediction, truth):
-    residuals = self._residual_fun(prediction, truth)
-    relative = residuals / np.maximum(np.abs(truth), 1e-3)
+  def _compute_stats(self, prediction, truth):
+    raw_residuals = self._residual_fun(prediction, truth)
+    rel_residuals = raw_residuals / np.maximum(np.abs(truth), 1e-3)
     r2 = np.mean(np.power(prediction - truth, 2.0))
-    return residuals, relative, r2
+    r1 = np.power(r2, 0.5)
+    return {
+      'raw_residuals': raw_residuals,
+      'rel_residuals': rel_residuals,
+      'r1': r1,
+      'r2': r2,
+    }
 
 
-  @property
   def cost(self):
     return self._cost
 
 
-  def _cost_function(self, residuals, relative, r2):
-    stats = pd.Series(relative).describe()
-    return stats['mean'] + stats['max']
+  def stats_str(self):
+    return 'Raw residuals:      %s\n' % _series_stats(self._stats['raw_residuals']) + \
+           'Relative residuals: %s\n' % _series_stats(self._stats['rel_residuals']) + \
+           'R1=%.6f\n' % self._stats['r1'] + \
+           'R2=%.6f\n' % self._stats['r2']
 
 
-def _print_residuals(residuals, relative, r2):
-  info('Raw residuals:      %s' % _series_stats(residuals))
-  info('Relative residuals: %s' % _series_stats(relative))
-  info('R2=%.6f' % r2)
+  def _cost_function(self, stats):
+    rel_residuals = stats['rel_residuals']
+    rel_stats = pd.Series(rel_residuals).describe()
+    values = np.array([rel_stats['mean'], rel_stats['max'], stats['r1']])
+    weights = np.array([1, 1, 8])
+    return np.dot(values, weights)
+
+
+  def save(self, dest_dir):
+    pass
+
+
+def _print_stats(stats):
+  info('Raw residuals:      %s' % _series_stats(stats['raw_residuals']))
+  info('Relative residuals: %s' % _series_stats(stats['rel_residuals']))
+  info('R1=%.6f' % stats['r1'])
+  info('R2=%.6f' % stats['r2'])
 
 
 def _series_stats(series):
