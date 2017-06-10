@@ -5,7 +5,7 @@ __author__ = 'maxim'
 import numpy as np
 
 from data_util import read_df, to_changes, split_train_test
-from nn_model import NeuralNetworkModel
+from models import *
 
 
 def select_best_model(source, params_fun, iterations):
