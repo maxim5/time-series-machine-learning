@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 __author__ = 'maxim'
 
+
 import tensorflow as tf
 
-from data_set import DataSet
 from model import Model
+from util.data_set import DataSet
 
 
 class NeuralNetworkModel(Model):

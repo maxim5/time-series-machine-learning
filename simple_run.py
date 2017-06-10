@@ -1,11 +1,12 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 __author__ = 'maxim'
 
 
 import numpy as np
 
-from data_util import read_df, to_changes, split_train_test
 from models import *
+from util.data_util import read_df, to_changes, split_train_test
 
 
 def select_best_model(source, params_fun, iterations):

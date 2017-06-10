@@ -1,11 +1,12 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 __author__ = 'maxim'
 
 
 import numpy as np
 import pandas as pd
 
-from data_util import to_dataset
+from util.data_util import to_dataset
 
 
 class Model():
