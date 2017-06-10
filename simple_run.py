@@ -56,7 +56,7 @@ def select_best_model(source, dest, params_fun, iterations):
   changes = to_changes(raw)
   train_df, test_df = split_train_test(changes)
 
-  processor = Processor(dest=dest, start_limit=1.0)
+  processor = Processor(dest=dest, start_limit=1.5)
   for i in xrange(iterations):
     info('Iteration #%d' % (i+1))
     params = params_fun()
@@ -100,12 +100,12 @@ def main():
                           'batch_size': np.random.choice([100, 200, 500, 1000]),
                           'epochs': 50,
                           'hidden_layer': np.random.randint(20, 80),
-                          'learning_rate': 10**np.random.uniform(-1.5, 0.2),
+                          'learning_rate': 10**np.random.uniform(-0.5, 0.5),
                           'init_sigma': 10**np.random.uniform(-7, -2),
                           'lambda': 10**np.random.uniform(-11, -6),
                           'dropout': np.random.uniform(0.1, 0.9),
                         },
-                        iterations=20)
+                        iterations=50)
 
 if __name__ == '__main__':
   main()
