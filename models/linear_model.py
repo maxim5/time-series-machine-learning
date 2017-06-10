@@ -10,6 +10,7 @@ from model import Model
 class LinearModel(Model):
   def __init__(self, **params):
     Model.__init__(self, **params)
+    self._with_bias = True
     self._beta = None
 
 

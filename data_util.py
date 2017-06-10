@@ -44,20 +44,22 @@ def split_train_test(changes, ratio=0.8):
   return train_df, test_df
 
 
-def to_dataset(df, k, target_column):
+def to_dataset(df, k, target_column, with_bias):
   df = df.drop(['date'], axis=1)
   target = df[target_column]
 
   n, cols = df.shape
   windows_num = n - k  # exclude last row, used for the label
 
-  x = np.empty([windows_num, k * cols + 1])  # plus bias
+  x = np.empty([windows_num, k * cols + int(with_bias)])
   y = np.empty([windows_num])
 
   for i in xrange(windows_num):
     window = df[i:i+k]
     row = window.as_matrix().reshape((-1,))
-    x[i] = np.insert(row, 0, 1)
+    if with_bias:
+      row = np.insert(row, 0, 1)
+    x[i] = row
     y[i] = target[i+k]
 
   print 'data set: x=%s y=%s' % (x.shape, y.shape)

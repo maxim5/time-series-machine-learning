@@ -10,10 +10,11 @@ from data_util import to_dataset
 
 class Model():
   def __init__(self, **params):
-    self.k = params.get('k')
-    self.target_column = params.get('target_column')
-    self.residual_fun = params.get('residual_fun')
-    self.cost = None
+    self._k = params.get('k')
+    self._target_column = params.get('target_column')
+    self._residual_fun = params.get('residual_fun')
+    self._cost = None
+    self._with_bias = False
 
 
   def session(self):
@@ -24,7 +25,7 @@ class Model():
 
 
   def fit(self, train_df):
-    x, y = to_dataset(train_df, self.k, target_column=self.target_column)
+    x, y = to_dataset(train_df, self._k, target_column=self._target_column, with_bias=self._with_bias)
     self._fit(x, y)
 
     prediction = self.predict(x)
@@ -41,18 +42,23 @@ class Model():
 
 
   def test(self, test_df):
-    x, y = to_dataset(test_df, self.k, target_column=self.target_column)
+    x, y = to_dataset(test_df, self._k, target_column=self._target_column, with_bias=self._with_bias)
     prediction = self.predict(x)
     residuals, relative, r2 = self._residuals(prediction, y)
     _print_residuals(residuals, relative, r2)
-    self.cost = self._cost_function(residuals, relative, r2)
+    self._cost = self._cost_function(residuals, relative, r2)
 
 
   def _residuals(self, prediction, truth):
-    residuals = self.residual_fun(prediction, truth)
+    residuals = self._residual_fun(prediction, truth)
     relative = residuals / np.maximum(np.abs(truth), 1e-3)
     r2 = np.mean(np.power(prediction - truth, 2.0))
     return residuals, relative, r2
+
+
+  @property
+  def cost(self):
+    return self._cost
 
 
   def _cost_function(self, residuals, relative, r2):
