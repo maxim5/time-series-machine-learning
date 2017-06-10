@@ -40,7 +40,7 @@ def split_train_test(changes, ratio=0.8):
   total_rows = changes.shape[0] - 1
   train_size = int(total_rows * ratio)
   test_size = total_rows - train_size
-  info('total_rows=%d train_size=%d train_size=%d' % (total_rows, train_size, test_size))
+  info('total_rows=%d train_size=%d test_size=%d' % (total_rows, train_size, test_size))
 
   train_df = changes[1:train_size].reset_index(drop=True)
   test_df = changes[train_size:].reset_index(drop=True)
