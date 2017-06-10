@@ -6,7 +6,7 @@ __author__ = 'maxim'
 import numpy as np
 import pandas as pd
 
-from util.data_util import to_dataset
+from util import *
 
 
 class Model():
@@ -68,9 +68,9 @@ class Model():
 
 
 def _print_residuals(residuals, relative, r2):
-  print 'Raw residuals:      %s' % _series_stats(residuals)
-  print 'Relative residuals: %s' % _series_stats(relative)
-  print 'R2=%.6f' % r2
+  info('Raw residuals:      %s' % _series_stats(residuals))
+  info('Relative residuals: %s' % _series_stats(relative))
+  info('R2=%.6f' % r2)
 
 
 def _series_stats(series):

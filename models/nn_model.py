@@ -6,7 +6,7 @@ __author__ = 'maxim'
 import tensorflow as tf
 
 from model import Model
-from util.data_set import DataSet
+from util import *
 
 
 class NeuralNetworkModel(Model):
@@ -52,14 +52,14 @@ class NeuralNetworkModel(Model):
 
     init = tf.global_variables_initializer()
 
-    print 'Start training'
+    debug('Start training')
     self._session.run(init)
     while train.epochs_completed < self._epochs:
       batch_x, batch_y = train.next_batch(self._batch_size)
       _, cost_ = self._session.run([optimizer, cost], feed_dict={x: batch_x, y: batch_y, mode: 'train'})
       if train.just_completed and train.epochs_completed % 10 == 0:
-        print 'Epoch: %2d cost=%.6f' % (train.epochs_completed, cost_)
-    print 'Training completed'
+        info('Epoch: %2d cost=%.6f' % (train.epochs_completed, cost_))
+    debug('Training completed')
 
     self._x = x
     self._mode = mode

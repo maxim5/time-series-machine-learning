@@ -6,7 +6,7 @@ __author__ = 'maxim'
 import numpy as np
 
 from models import *
-from util.data_util import read_df, to_changes, split_train_test
+from util import *
 
 
 def select_best_model(source, params_fun, iterations):
@@ -18,28 +18,29 @@ def select_best_model(source, params_fun, iterations):
   min_params = None
 
   for i in xrange(iterations):
-    print '\nIteration #%d' % (i+1)
+    info('Iteration #%d' % (i+1))
     params = params_fun()
     cost = run_model(train_df, test_df, **params)
     if cost < min_cost:
       min_cost = cost
       min_params = params
     if cost < 1.0:
-      print 'Promising!'
+      info('Promising!')
 
-  print '\n***\nBest result:'
-  print 'Cost=%.5f' % min_cost
-  print 'Params=%s' % str(min_params)
+  info('***')
+  info('Best result:')
+  info('Cost=%.5f' % min_cost)
+  info('Params=%s' % str(min_params))
 
 
 def run_model(train_df, test_df, **params):
-  print 'Params=%s' % str(params)
+  info('Params=%s' % str(params))
   model_class = params['model_class']
   model = model_class(**params)
   with model.session():
     model.fit(train_df)
     model.test(test_df)
-    print 'Cost=%.6f' % model.cost
+    info('Cost=%.6f' % model.cost)
   return model.cost
 
 

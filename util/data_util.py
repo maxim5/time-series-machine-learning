@@ -7,6 +7,8 @@ import datetime
 import numpy as np
 import pandas as pd
 
+from logging import info, debug
+
 
 # pd.set_option('display.expand_frame_repr', False)
 
@@ -38,7 +40,7 @@ def split_train_test(changes, ratio=0.8):
   total_rows = changes.shape[0] - 1
   train_size = int(total_rows * ratio)
   test_size = total_rows - train_size
-  print 'total_rows=%d train_size=%d train_size=%d' % (total_rows, train_size, test_size)
+  info('total_rows=%d train_size=%d train_size=%d' % (total_rows, train_size, test_size))
 
   train_df = changes[1:train_size].reset_index(drop=True)
   test_df = changes[train_size:].reset_index(drop=True)
@@ -63,5 +65,5 @@ def to_dataset(df, k, target_column, with_bias):
     x[i] = row
     y[i] = target[i+k]
 
-  print 'data set: x=%s y=%s' % (x.shape, y.shape)
+  debug('data set: x=%s y=%s' % (x.shape, y.shape))
   return x, y
