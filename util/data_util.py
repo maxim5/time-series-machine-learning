@@ -36,7 +36,7 @@ def seconds(datetime_):
   return (datetime_ - datetime_.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
 
 
-def split_train_test(changes, ratio=0.8):
+def split_train_test(changes, ratio=0.9):
   total_rows = changes.shape[0] - 1
   train_size = int(total_rows * ratio)
   test_size = total_rows - train_size
