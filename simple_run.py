@@ -13,19 +13,19 @@ from util import *
 class Processor:
   def __init__(self, dest, start_limit):
     self._dest = dest
-    self._min_cost = start_limit
+    self._min_eval = start_limit
     self._min_params = None
 
   def process(self, model, params):
-    cost = model.cost()
-    is_record = cost < self._min_cost
+    eval = model.eval()
+    is_record = eval < self._min_eval
     marker = '!!!' if is_record else '   '
-    info('%s Cost=%.6f' % (marker, cost))
+    info('%s Eval=%.6f' % (marker, eval))
     if is_record:
-      self._min_cost = cost
+      self._min_eval = eval
       self._min_params = params
 
-      dest_dir = self._dest % (params['target_column'], model.cost(), params['k'])
+      dest_dir = self._dest % (params['target_column'], model.eval(), params['k'])
       model.save(dest_dir)
       self.save_stats(dest_dir, model)
       self.save_params(dest_dir, **params)
@@ -47,7 +47,7 @@ class Processor:
   def print_result(self):
     info('***')
     info('Best result:')
-    info('Cost=%.5f' % self._min_cost)
+    info('Eval=%.5f' % self._min_eval)
     info('Params=%s' % str(self._min_params))
 
 

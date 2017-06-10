@@ -14,7 +14,7 @@ class Model():
     self._k = params.get('k')
     self._target_column = params.get('target_column')
     self._residual_fun = params.get('residual_fun')
-    self._cost = None
+    self._eval = None
     self._stats = None
     self._with_bias = False
 
@@ -48,7 +48,7 @@ class Model():
     prediction = self.predict(x)
     self._stats = self._compute_stats(prediction, y)
     _print_stats(self._stats)
-    self._cost = self._cost_function(self._stats)
+    self._eval = self._eval_function(self._stats)
 
 
   def _compute_stats(self, prediction, truth):
@@ -64,8 +64,8 @@ class Model():
     }
 
 
-  def cost(self):
-    return self._cost
+  def eval(self):
+    return self._eval
 
 
   def stats_str(self):
@@ -75,7 +75,7 @@ class Model():
            'R2=%.6f\n' % self._stats['r2']
 
 
-  def _cost_function(self, stats):
+  def _eval_function(self, stats):
     rel_residuals = stats['rel_residuals']
     rel_stats = pd.Series(rel_residuals).describe()
     values = np.array([rel_stats['mean'], rel_stats['max'], stats['r1']])
