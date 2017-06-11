@@ -45,7 +45,7 @@ def update_pair(pair, period, dest_dir):
     info("Data frame saved to %s" % path)
 
 
-def update_selected(pairs, periods=api.AVAILABLE_PERIODS, data_dir='data', sleep=1):
+def update_selected(pairs, periods=api.AVAILABLE_PERIODS, data_dir='_data', sleep=1):
   if not os.path.exists(data_dir):
     os.makedirs(data_dir)
 
