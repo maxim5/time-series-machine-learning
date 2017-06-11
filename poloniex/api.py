@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
+# See the full API here:
+# https://poloniex.com/support/api/
+
 __author__ = 'maxim'
 
 
