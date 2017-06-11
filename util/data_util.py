@@ -7,6 +7,7 @@ import datetime
 import numpy as np
 import pandas as pd
 
+from data_set import DataSet
 from logging import info, debug
 
 
@@ -52,7 +53,7 @@ def to_dataset(df, k, target_column, with_bias):
   target = df[target_column]
 
   n, cols = df.shape
-  windows_num = n - k  # exclude last row, used for the label
+  windows_num = n - k  # effective window size, including the label, is k + 1
 
   x = np.empty([windows_num, k * cols + int(with_bias)])
   y = np.empty([windows_num])
@@ -67,3 +68,36 @@ def to_dataset(df, k, target_column, with_bias):
 
   debug('data set: x=%s y=%s' % (x.shape, y.shape))
   return x, y
+
+
+def split_dataset(dataset, ratio=None):
+  size = dataset.size
+  if ratio is None:
+    ratio = _choose_optimal_train_ratio(size)
+
+  mask = np.zeros(size, dtype=np.bool_)
+  train_size = int(size * ratio)
+  mask[:train_size] = True
+  np.random.shuffle(mask)
+
+  train_x = dataset.x[mask, :]
+  train_y = dataset.y[mask]
+
+  mask = np.invert(mask)
+  test_x = dataset.x[mask, :]
+  test_y = dataset.y[mask]
+
+  return DataSet(train_x, train_y), DataSet(test_x, test_y)
+
+
+def _choose_optimal_train_ratio(size):
+  if size > 100000: return 0.95
+  if size > 50000:  return 0.9
+  if size > 20000:  return 0.875
+  if size > 10000:  return 0.85
+  if size > 7500:   return 0.825
+  if size > 5000:   return 0.8
+  if size > 3000:   return 0.775
+  if size > 2000:   return 0.75
+  if size > 1000:   return 0.7
+  return 0.7
