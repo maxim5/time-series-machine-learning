@@ -60,7 +60,7 @@ class JobRunner:
 
   def iterate(self, iterations, params_fun):
     for i in xrange(iterations):
-      info('Iteration #%d' % (i + 1))
+      info('Iteration %s#%d' % (self._job_info.ticker, i + 1))
       params = params_fun()
       self.single_run(**params)
 
