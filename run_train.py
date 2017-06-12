@@ -16,7 +16,7 @@ def main():
           job_info = JobInfo('_data', '_zoo', ticker=ticker, target=target, estimator=estimator)
           job_runner = JobRunner(job_info, limit='auto')
           job_runner.iterate(iterations=10, params_fun=lambda : {
-            'target_column': job_info.target,
+            'target': job_info.target,
             'residual_fun': job_info.residual_fun(),
             'k': np.random.choice([1, 2, 3, 4]),
             'model_class': NeuralNetworkModel,

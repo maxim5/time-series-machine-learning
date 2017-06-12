@@ -27,6 +27,13 @@ class JobInfo:
     elif self.estimator == 'pes':
       return PESSIMIST
 
+  def as_run_params(self):
+    return {
+      'ticker': self.ticker,
+      'target': self.target,
+      'estimator': self.estimator,
+    }
+
   def get_source_name(self):
     return os.path.join(self.data_dir, '%s.csv' % self.ticker)
 

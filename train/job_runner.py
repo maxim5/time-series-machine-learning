@@ -24,11 +24,17 @@ class JobRunner:
   def single_run(self, **params):
     info('Params=%s' % smart_str(params))
 
-    data_set = to_dataset(self._changes_df, params['k'], params['target_column'], params.get('with_bias', False))
+    data_set = to_dataset(self._changes_df, params['k'], params['target'], params.get('with_bias', False))
     train, test = split_dataset(data_set)
 
     model_class = params['model_class']
-    model = model_class(**params['model_params'])
+    model_params = params['model_params']
+    model_params['features'] = train.x.shape[1]
+
+    run_params = {key: params[key] for key in ['k', 'target']}
+    run_params.update(self._job_info.as_run_params())
+
+    model = model_class(**model_params)
     evaluator = Evaluator(params['residual_fun'])
 
     with model.session():
@@ -36,7 +42,6 @@ class JobRunner:
       train_eval, train_stats = evaluator.eval(model, train)
       info('Train result:\n%sEval=%.6f' % (evaluator.stats_str(train_stats), train_eval))
 
-      model.predict(test.x)
       test_eval, test_stats = evaluator.eval(model, test)
       is_record = test_eval < self._min_eval
       marker = ' !!!' if is_record else ''
@@ -48,8 +53,9 @@ class JobRunner:
 
         dest_dir = self._job_info.get_dest_name(test_eval, params['k'])
         model.save(dest_dir)
-        self.save_stats(dest_dir, evaluator.stats_str(test_stats))
-        self.save_params(dest_dir, smart_str(params['model_params']))
+        _save_to(dest_dir, 'stats.txt', evaluator.stats_str(test_stats))
+        _save_to(dest_dir, 'model-params.txt', smart_str(model_params))
+        _save_to(dest_dir, 'run-params.txt', smart_str(run_params))
 
 
   def iterate(self, iterations, params_fun):
@@ -57,20 +63,6 @@ class JobRunner:
       info('Iteration #%d' % (i + 1))
       params = params_fun()
       self.single_run(**params)
-
-
-  def save_stats(self, dest_dir, stats):
-    stats_file_name = os.path.join(dest_dir, 'stats.txt')
-    with open(stats_file_name, 'w') as file_:
-      file_.write(stats)
-      info('Stats   saved to %s' % stats_file_name)
-
-
-  def save_params(self, dest_dir, params):
-    params_file_name = os.path.join(dest_dir, 'model_params.txt')
-    with open(params_file_name, 'w') as file_:
-      file_.write(params)
-      info('Params  saved to %s' % params_file_name)
 
 
   def print_result(self):
@@ -82,10 +74,17 @@ class JobRunner:
            'Params=%s\n' % str(self._min_params))
 
 
+def _save_to(dest_dir, name, data):
+  path = os.path.join(dest_dir, name)
+  with open(path, 'w') as file_:
+    file_.write(data)
+    info('Data saved: %s' % path)
+
+
 def _resolve_auto(job_info):
   results = job_info.get_current_eval_results()
-  info('Auto-detected current results for %s: %s' % (job_info.ticker, results))
   if results:
+    info('Auto-detected current results for %s: %s' % (job_info.ticker, results))
     mean = np.mean(results)
     info('Using the limit=%.5f' % mean)
     return mean
