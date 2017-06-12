@@ -4,6 +4,7 @@ __author__ = 'maxim'
 
 
 from models import Evaluator
+from predict import *
 from train import *
 from util import *
 
