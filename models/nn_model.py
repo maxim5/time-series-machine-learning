@@ -10,6 +10,9 @@ from model import Model
 from util import *
 
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
+
 class NeuralNetworkModel(Model):
   def __init__(self, **params):
     Model.__init__(self, **params)
