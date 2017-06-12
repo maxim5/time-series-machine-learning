@@ -62,3 +62,17 @@ def update_all(**kwargs):
   pairs = get_all_pairs_list()
   kwargs['pairs'] = pairs
   update_selected(**kwargs)
+
+
+def get_latest_data(pair, period, depth):
+  now = time.time()
+  now_seconds = int(now)
+  start_time = now_seconds - (depth + 2) * api.period_to_seconds(period)
+  end_time = 2 ** 32
+
+  df = api.get_chart_data(pair, start_time, end_time, period)
+  if df.date.iloc[-1] == 0:
+    warn('Error. No data for %s.' % pair)
+    return
+
+  return df
