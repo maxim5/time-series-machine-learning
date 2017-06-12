@@ -39,8 +39,10 @@ class JobInfo:
 
 
 def parse_model_infos(directory):
-  files = os.listdir(directory)
-  return [_parse_model_file(file_name) for file_name in files]
+  if os.path.exists(directory):
+    files = os.listdir(directory)
+    return [_parse_model_file(file_name) for file_name in files]
+  return []
 
 
 def parse_eval(directory, accept):
