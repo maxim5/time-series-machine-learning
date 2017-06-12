@@ -65,7 +65,9 @@ class NeuralNetworkModel(Model):
 
   def session(self):
     assert self._graph is not None
-    self._session = tf.Session(graph=self._graph)
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True  # https://github.com/vijayvee/Recursive-neural-networks-TensorFlow/issues/1
+    self._session = tf.Session(graph=self._graph, config=config)
     return self._session
 
 
