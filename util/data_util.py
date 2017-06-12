@@ -11,7 +11,7 @@ from data_set import DataSet
 from logging import info, debug
 
 
-# pd.set_option('display.expand_frame_repr', False)
+pd.set_option('display.expand_frame_repr', False)
 
 
 def read_df(file_name):
@@ -21,6 +21,8 @@ def read_df(file_name):
 
 
 def to_changes(raw):
+  if raw.date.dtype == np.int64:
+    raw.date = pd.to_datetime(raw.date * 1000, unit='ms')
   return pd.DataFrame({
     'date': raw.date,
     'time': raw.date.astype(datetime.datetime).apply(lambda val: seconds(val) / (60*60*24)),
