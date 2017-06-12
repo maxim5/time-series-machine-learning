@@ -10,11 +10,11 @@ from model import Model
 class LinearModel(Model):
   def __init__(self, **params):
     Model.__init__(self, **params)
-    self._with_bias = True
     self._beta = None
 
 
-  def _fit(self, x, y):
+  def fit(self, train):
+    x, y = train.x, train.y
     self._beta = np.linalg.pinv(x.T.dot(x)).dot(x.T).dot(y)
 
 

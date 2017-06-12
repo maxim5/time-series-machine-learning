@@ -37,18 +37,8 @@ def seconds(datetime_):
   return (datetime_ - datetime_.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
 
 
-def split_train_test(changes, ratio=0.9):
-  total_rows = changes.shape[0] - 1
-  train_size = int(total_rows * ratio)
-  test_size = total_rows - train_size
-  info('total_rows=%d train_size=%d test_size=%d' % (total_rows, train_size, test_size))
-
-  train_df = changes[1:train_size].reset_index(drop=True)
-  test_df = changes[train_size:].reset_index(drop=True)
-  return train_df, test_df
-
-
 def to_dataset(df, k, target_column, with_bias):
+  df = df[1:]
   df = df.drop(['date'], axis=1)
   target = df[target_column]
 
@@ -67,7 +57,7 @@ def to_dataset(df, k, target_column, with_bias):
     y[i] = target[i+k]
 
   debug('data set: x=%s y=%s' % (x.shape, y.shape))
-  return x, y
+  return DataSet(x, y)
 
 
 def split_dataset(dataset, ratio=None):

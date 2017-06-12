@@ -13,8 +13,8 @@ class XgbModel(Model):
     self._model = XGBRegressor()
 
 
-  def _fit(self, x, y):
-    self._model.fit(x, y)
+  def fit(self, train):
+    self._model.fit(train.x, train.y)
 
 
   def predict(self, x):

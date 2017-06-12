@@ -5,16 +5,18 @@ __author__ = 'maxim'
 
 import os
 import re
-from numpy import np
+import numpy as np
 
 
 PESSIMIST = lambda pred, truth: np.maximum(pred - truth, 0)   # favors truth > pred, i.e. lower bound estimator
 OPTIMIST  = lambda pred, truth: np.maximum(truth - pred, 0)   # favors pred > truth, i.e. upper bound estimator
 
-class ModelInput:
-  def __init__(self, ticker, target, estimator):
+class JobInfo:
+  def __init__(self, data_dir, zoo_dir, ticker, target, estimator):
     assert target in ['high', 'low']
-    assert estimator in ['opt', 'optimist', 'pes', 'pessimist']
+    assert estimator in ['opt', 'optimist', 'optimistic', 'pes', 'pessimist', 'pessimistic']
+    self.data_dir = data_dir
+    self.zoo_dir = zoo_dir
     self.ticker = ticker
     self.target = target
     self.estimator = estimator[:3]
@@ -26,10 +28,14 @@ class ModelInput:
       return PESSIMIST
 
   def get_source_name(self):
-    return '%s.csv' % self.ticker
+    return os.path.join(self.data_dir, '%s.csv' % self.ticker)
 
-  def get_model_dir_name(self, eval_, k):
-    return '%s__%s__c=%.4f__k=%d' % (self.target, self.estimator, eval_, k)
+  def get_dest_name(self, eval_, k):
+    return os.path.join(self.zoo_dir, self.ticker, '%s__%s__eval=%.4f__k=%d' % (self.target, self.estimator, eval_, k))
+
+  def get_current_eval_results(self):
+    directory = os.path.join(self.zoo_dir, self.ticker)
+    return parse_eval(directory, lambda info: info['target'] == self.target and info['estimator'] == self.estimator)
 
 
 def parse_model_infos(directory):
@@ -37,9 +43,9 @@ def parse_model_infos(directory):
   return [_parse_model_file(file_name) for file_name in files]
 
 
-def parse_eval(directory):
+def parse_eval(directory, accept):
   infos = parse_model_infos(directory)
-  return [info['eval'] for info in infos if info]
+  return [info['eval'] for info in infos if info if accept(info)]
 
 
 def _parse_model_file(file_name):

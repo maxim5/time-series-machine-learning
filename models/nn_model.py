@@ -30,9 +30,8 @@ class NeuralNetworkModel(Model):
     return self._session
 
 
-  def _fit(self, train_x, train_y):
-    train = DataSet(train_x, train_y)
-    _, features = train_x.shape
+  def fit(self, train):
+    _, features = train.x.shape
 
     x = tf.placeholder('float', shape=[None, features], name='x')
     y = tf.placeholder('float', shape=[None], name='y')
