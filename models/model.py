@@ -4,6 +4,8 @@ __author__ = 'maxim'
 
 
 class Model:
+  DATA_WITH_BIAS = False
+
   def __init__(self, **params):
     self._features = params['features']
 

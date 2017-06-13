@@ -24,10 +24,12 @@ class JobRunner:
   def single_run(self, **params):
     info('Params=%s' % smart_str(params))
 
-    data_set = to_dataset(self._changes_df, params['k'], params['target'], params.get('with_bias', False))
+    model_class = params['model_class']
+    with_bias = model_class.DATA_WITH_BIAS
+
+    data_set = to_dataset(self._changes_df, k=params['k'], target_column=params['target'], with_bias=with_bias)
     train, test = split_dataset(data_set)
 
-    model_class = params['model_class']
     model_params = params['model_params']
     model_params['features'] = train.x.shape[1]
 
