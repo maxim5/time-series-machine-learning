@@ -11,12 +11,10 @@ class Evaluator:
   def __init__(self):
     pass
 
-
   def eval(self, model, test_set):
     prediction = model.predict(test_set.x)
     stats = self._compute_stats(prediction, test_set.y)
     return self._evaluate(stats), stats
-
 
   def stats_str(self, stats):
     return 'Mean absolute error: %.6f\n' % stats['mae'] + \
@@ -27,7 +25,6 @@ class Evaluator:
            'Mean error:          %.6f\n' % stats['me'] + \
            'Residuals stats:     %s\n' % _series_stats(stats['raw_residuals']) + \
            'Relative residuals:  %s\n' % _series_stats(stats['rel_residuals'])
-
 
   def _compute_stats(self, prediction, truth):
     residuals = np.abs(prediction - truth)
@@ -41,7 +38,6 @@ class Evaluator:
       'raw_residuals': residuals,
       'rel_residuals': residuals / np.maximum(np.abs(truth), 1e-3),
     }
-
 
   def _evaluate(self, stats):
     risk_factor = 1.0
