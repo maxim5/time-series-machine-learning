@@ -21,13 +21,11 @@ class NeuralNetworkModel(Model):
 
     self._batch_size = params.get('batch_size', 1024)
     self._epochs = params.get('epochs', 80)
-    self._hidden_layer = params.get('hidden_layer', 50)
+    self._layers = params.get('layers', [])
     self._learning_rate = params.get('learning_rate', 0.001)
     self._init_sigma = params.get('init_sigma', 0.001)
     self._lambda = params.get('lambda', 0.005)
     self._cost_func = COST_FUNCTIONS[params.get('cost_func', 'l2')]
-    self._activation_func = ACTIVATIONS[params.get('activation_func', 'relu')]
-    self._dropout = params.get('dropout', 0.5)
 
     self._graph = None
     self._session = None
@@ -42,17 +40,27 @@ class NeuralNetworkModel(Model):
 
       init = lambda shape: tf.random_normal(shape=shape) * self._init_sigma
 
-      W1 = tf.Variable(init([self._features, self._hidden_layer]), name='W1')
-      b1 = tf.Variable(init([self._hidden_layer]), name='b1')
-      layer1 = tf.matmul(x, W1) + b1
-      layer1 = self._activation_func(layer1)
-      layer1 = dropout(layer1, tf.equal(mode, 'train'), keep_prob=self._dropout)
+      layer = x
+      dimension = self._features
+      reg = 0
+      for idx, layer_params in enumerate(self._layers):
+        size = layer_params.get('size', 50)
+        activation_func = ACTIVATIONS[layer_params.get('activation_func', 'relu')]
+        dropout_prob = layer_params.get('dropout', 0.5)
 
-      W2 = tf.Variable(init([self._hidden_layer, 1]), name='W2')
-      b2 = tf.Variable(init([1]), name='b2')
-      output_layer = tf.matmul(layer1, W2) + b2
+        W = tf.Variable(init([dimension, size]), name='W%d' % idx)
+        b = tf.Variable(init([size]), name='b%d' % idx)
+        layer = tf.matmul(layer, W) + b
+        layer = activation_func(layer)
+        layer = dropout(layer, tf.equal(mode, 'train'), keep_prob=dropout_prob)
+        reg += self._lambda * tf.nn.l2_loss(W)
+        dimension = size
 
-      reg = self._lambda * (tf.nn.l2_loss(W1) + tf.nn.l2_loss(W2))
+      W_out = tf.Variable(init([dimension, 1]), name='W_out')
+      b_out = tf.Variable(init([1]), name='b_out')
+      output_layer = tf.matmul(layer, W_out) + b_out
+      reg += self._lambda * tf.nn.l2_loss(W_out)
+
       cost = self._cost_func(output_layer, y) + reg
       optimizer = tf.train.AdamOptimizer(self._learning_rate).minimize(cost)
 
