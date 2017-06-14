@@ -8,8 +8,8 @@ import pandas as pd
 
 
 class Evaluator:
-  def __init__(self, residual_fun):
-    self._residual_fun = residual_fun
+  def __init__(self):
+    pass
 
 
   def eval(self, model, test_set):
@@ -19,29 +19,33 @@ class Evaluator:
 
 
   def stats_str(self, stats):
-    return 'Raw residuals:      %s\n' % _series_stats(stats['raw_residuals']) + \
-           'Relative residuals: %s\n' % _series_stats(stats['rel_residuals']) + \
-           'R1=%.6f\n' % stats['r1'] + \
-           'R2=%.6f\n' % stats['r2']
+    return 'Mean absolute error: %.6f\n' % stats['mae'] + \
+           'SD absolute error:   %.6f\n' % stats['stdae'] + \
+           'Sign accuracy:       %.6f\n' % stats['sign_accuracy'] + \
+           'Mean squared error:  %.6f\n' % stats['mse'] + \
+           'Sqrt of MSE:         %.6f\n' % stats['sqrt_mse'] + \
+           'Mean error:          %.6f\n' % stats['me'] + \
+           'Residuals stats:     %s\n' % _series_stats(stats['raw_residuals']) + \
+           'Relative residuals:  %s\n' % _series_stats(stats['rel_residuals'])
+
 
   def _compute_stats(self, prediction, truth):
-    raw_residuals = self._residual_fun(prediction, truth)
-    rel_residuals = raw_residuals / np.maximum(np.abs(truth), 1e-3)
-    r2 = np.mean(np.power(prediction - truth, 2.0))
-    r1 = np.power(r2, 0.5)
+    residuals = np.abs(prediction - truth)
     return {
-      'raw_residuals': raw_residuals,
-      'rel_residuals': rel_residuals,
-      'r1': r1,
-      'r2': r2,
+      'mae': np.mean(residuals),
+      'stdae': np.std(residuals),
+      'sign_accuracy': np.mean(np.equal(np.sign(prediction), np.sign(truth))),
+      'mse': np.mean(np.power(prediction - truth, 2.0)),
+      'sqrt_mse': np.mean(np.power(prediction - truth, 2.0)) ** 0.5,
+      'me': np.mean(prediction - truth),
+      'raw_residuals': residuals,
+      'rel_residuals': residuals / np.maximum(np.abs(truth), 1e-3),
     }
 
+
   def _evaluate(self, stats):
-    rel_residuals = stats['rel_residuals']
-    rel_stats = pd.Series(rel_residuals).describe()
-    values = np.array([rel_stats['mean'], rel_stats['max'], stats['r1']])
-    weights = np.array([1, 1, 8])
-    return np.dot(values, weights)
+    risk_factor = 1.0
+    return stats['mae'] + risk_factor * stats['stdae']
 
 
 def _series_stats(series):
