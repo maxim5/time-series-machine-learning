@@ -6,17 +6,14 @@ __author__ = 'maxim'
 import os
 import tensorflow as tf
 
+from nn_ops import ACTIVATIONS, COST_FUNCTIONS, dropout
+
 from model import Model
 from util import *
 
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-
-COST_FUNCTIONS = {
-  'l1': lambda output, y: tf.reduce_mean(tf.abs(output - y)),
-  'l2': lambda output, y: tf.reduce_mean(tf.pow(output - y, 2.0)),
-}
 
 class NeuralNetworkModel(Model):
   def __init__(self, **params):
@@ -29,6 +26,7 @@ class NeuralNetworkModel(Model):
     self._init_sigma = params.get('init_sigma', 0.001)
     self._lambda = params.get('lambda', 0.005)
     self._cost_func = COST_FUNCTIONS[params.get('cost_func', 'l2')]
+    self._activation_func = ACTIVATIONS[params.get('activation_func', 'relu')]
     self._dropout = params.get('dropout', 0.5)
 
     self._graph = None
@@ -47,7 +45,7 @@ class NeuralNetworkModel(Model):
       W1 = tf.Variable(init([self._features, self._hidden_layer]), name='W1')
       b1 = tf.Variable(init([self._hidden_layer]), name='b1')
       layer1 = tf.matmul(x, W1) + b1
-      layer1 = tf.nn.relu(layer1)
+      layer1 = self._activation_func(layer1)
       layer1 = dropout(layer1, tf.equal(mode, 'train'), keep_prob=self._dropout)
 
       W2 = tf.Variable(init([self._hidden_layer, 1]), name='W2')
@@ -107,9 +105,3 @@ class NeuralNetworkModel(Model):
     saver = tf.train.Saver()
     saver.restore(self._session, path)
     info('Session restored from %s' % path)
-
-
-def dropout(incoming, is_training, keep_prob):
-  if keep_prob is None:
-    return incoming
-  return tf.cond(is_training, lambda: tf.nn.dropout(incoming, keep_prob), lambda: incoming)
