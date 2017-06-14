@@ -37,7 +37,7 @@ class JobRunner:
     run_params.update(self._job_info.as_run_params())
 
     model = model_class(**model_params)
-    evaluator = Evaluator(params['residual_fun'])
+    evaluator = Evaluator()
 
     with model.session():
       model.fit(train)
@@ -90,5 +90,5 @@ def _resolve_auto(job_info):
     mean = np.mean(results)
     info('Using the limit=%.5f' % mean)
     return mean
-  info('Using the default limit=1.5')
-  return 1.5
+  info('Using the default limit=1.0')
+  return 1.0
