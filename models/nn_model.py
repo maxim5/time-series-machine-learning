@@ -13,6 +13,11 @@ from util import *
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
+COST_FUNCTIONS = {
+  'l1': lambda output, y: tf.reduce_mean(tf.abs(output - y)),
+  'l2': lambda output, y: tf.reduce_mean(tf.pow(output - y, 2.0)),
+}
+
 class NeuralNetworkModel(Model):
   def __init__(self, **params):
     Model.__init__(self, **params)
@@ -23,6 +28,7 @@ class NeuralNetworkModel(Model):
     self._learning_rate = params.get('learning_rate', 0.001)
     self._init_sigma = params.get('init_sigma', 0.001)
     self._lambda = params.get('lambda', 0.005)
+    self._cost_func = COST_FUNCTIONS[params.get('cost_func', 'l2')]
     self._dropout = params.get('dropout', 0.5)
 
     self._graph = None
@@ -49,7 +55,7 @@ class NeuralNetworkModel(Model):
       output_layer = tf.matmul(layer1, W2) + b2
 
       reg = self._lambda * (tf.nn.l2_loss(W1) + tf.nn.l2_loss(W2))
-      cost = tf.reduce_mean(tf.abs(output_layer - y)) + reg
+      cost = self._cost_func(output_layer, y) + reg
       optimizer = tf.train.AdamOptimizer(self._learning_rate).minimize(cost)
 
       init = tf.global_variables_initializer()
