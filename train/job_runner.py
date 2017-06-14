@@ -3,7 +3,6 @@
 __author__ = 'maxim'
 
 
-import numpy as np
 import os
 
 from models import Evaluator
@@ -17,7 +16,7 @@ class JobRunner:
 
     self._job_info = job_info
     self._changes_df = changes_df
-    self._min_eval = _resolve_auto(job_info) if limit == 'auto' else limit
+    self._min_eval = _resolve_limit(limit, job_info)
     self._min_params = None
 
 
@@ -83,12 +82,16 @@ def _save_to(dest_dir, name, data):
     info('Data saved: %s' % path)
 
 
-def _resolve_auto(job_info):
+def _resolve_limit(limit, job_info):
+  if not callable(limit):
+    return limit
+
   results = job_info.get_current_eval_results()
   if results:
     info('Auto-detected current results for %s: %s' % (job_info.ticker, results))
-    mean = np.mean(results)
-    info('Using the limit=%.5f' % mean)
-    return mean
+    value = limit(results)
+    info('Using the limit=%.5f' % value)
+    return value
+
   info('Using the default limit=1.0')
   return 1.0
