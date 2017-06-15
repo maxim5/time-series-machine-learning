@@ -53,6 +53,7 @@ class JobRunner:
         self._min_params = params
 
         dest_dir = self._job_info.get_dest_name(test_eval, params['k'])
+        os.makedirs(dest_dir)
         model.save(dest_dir)
         _save_to(dest_dir, 'stats.txt', evaluator.stats_str(test_stats))
         _save_to(dest_dir, 'model-params.txt', smart_str(model_params))
