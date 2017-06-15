@@ -18,9 +18,9 @@ def random_layers(num):
 
 
 def main():
-  for ticker in ['BTC_ETH_2h', 'BTC_DGB_2h']:
+  for name in ['BTC_ETH_2h', 'BTC_DGB_2h']:
     for target in ['high']:
-      job_info = JobInfo('_data', '_zoo', ticker=ticker, target=target)
+      job_info = JobInfo('_data', '_zoo', name=name, target=target)
       job_runner = JobRunner(job_info, limit=np.mean)
       job_runner.iterate(iterations=10, params_fun=lambda : {
         'target': job_info.target,

@@ -17,7 +17,7 @@ def try_model(path, data_dir='_data', zoo_dir='_zoo'):
   model_info = get_model_info(path)
 
   run_params = model_info.run_params
-  job = JobInfo(data_dir, zoo_dir, run_params['ticker'], run_params['target'])
+  job = JobInfo(data_dir, zoo_dir, run_params['name'], run_params['target'])
   raw_df = read_df(job.get_source_name())
   changes_df = to_changes(raw_df)
   data_set = to_dataset(changes_df, run_params['k'], run_params['target'], model_info.model_class.DATA_WITH_BIAS)
@@ -45,22 +45,23 @@ def predict_model(changes_df, path):
     return predicted
 
 
-def predict_all_models(changes_df, ticker, accept):
-  ticker_dir = '_zoo/%s' % ticker
-  models = [dir for dir in os.listdir(ticker_dir) if accept(dir)]
+def predict_all_models(changes_df, name, accept):
+  home_dir = '_zoo/%s' % name
+  models = [dir for dir in os.listdir(home_dir) if accept(dir)]
   predictions = []
   for model in models:
-    value = predict_model(changes_df, os.path.join(ticker_dir, model))
+    value = predict_model(changes_df, os.path.join(home_dir, model))
     predictions.append(value)
   info()
   info('Mean predicted value: %.5f' % np.mean(predictions))
 
 
 def main():
-  for pair in ['BTC_ETH', 'BTC_DGB']:
-    raw_df = poloniex.get_latest_data(pair, period='2h', depth=10)
+  period = '2h'
+  for ticker in ['BTC_ETH', 'BTC_DGB']:
+    raw_df = poloniex.get_latest_data(ticker, period=period, depth=10)
     changes_df = to_changes(raw_df)
-    predict_all_models(changes_df, '%s_2h' % pair, lambda name: name.startswith('high_'))
+    predict_all_models(changes_df, '%s_%s' % (ticker, period), lambda name: name.startswith('high_'))
 
 
 if __name__ == '__main__':

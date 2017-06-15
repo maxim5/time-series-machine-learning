@@ -8,27 +8,35 @@ import re
 
 
 class JobInfo:
-  def __init__(self, data_dir, zoo_dir, ticker, target):
+  def __init__(self, data_dir, zoo_dir, name, target):
     self.data_dir = data_dir
     self.zoo_dir = zoo_dir
-    self.ticker = ticker
+    self.name = name
+    self.ticker, self.period = _split_name(name)
     self.target = target
 
   def as_run_params(self):
     return {
+      'name': self.name,
       'ticker': self.ticker,
+      'period': self.period,
       'target': self.target,
     }
 
   def get_source_name(self):
-    return os.path.join(self.data_dir, '%s.csv' % self.ticker)
+    return os.path.join(self.data_dir, '%s.csv' % self.name)
 
   def get_dest_name(self, eval_, k):
-    return os.path.join(self.zoo_dir, self.ticker, '%s_eval=%.4f_k=%d' % (self.target, eval_, k))
+    return os.path.join(self.zoo_dir, self.name, '%s_eval=%.4f_k=%d' % (self.target, eval_, k))
 
   def get_current_eval_results(self):
-    directory = os.path.join(self.zoo_dir, self.ticker)
+    directory = os.path.join(self.zoo_dir, self.name)
     return parse_eval(directory, lambda info: info['target'] == self.target)
+
+
+def _split_name(name):
+  idx = name.rindex('_')
+  return name[:idx], name[idx+1:]
 
 
 def parse_model_infos(directory):

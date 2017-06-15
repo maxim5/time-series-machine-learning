@@ -61,7 +61,7 @@ class JobRunner:
 
   def iterate(self, iterations, params_fun):
     for i in xrange(iterations):
-      info('Iteration %s#%d' % (self._job_info.ticker, i + 1))
+      info('Iteration %s#%d' % (self._job_info.name, i + 1))
       params = params_fun()
       self.single_run(**params)
 
@@ -88,7 +88,7 @@ def _resolve_limit(limit, job_info):
 
   results = job_info.get_current_eval_results()
   if results:
-    info('Auto-detected current results for %s: %s' % (job_info.ticker, results))
+    info('Auto-detected current results for %s: %s' % (job_info.name, results))
     value = limit(results)
     info('Using the limit=%.5f' % value)
     return value

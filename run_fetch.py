@@ -7,7 +7,7 @@ import poloniex
 
 
 def main():
-  poloniex.update_selected(pairs=['BTC_ETH', 'BTC_DGB', 'BTC_STR'])
+  poloniex.update_selected(tickers=['BTC_ETH', 'BTC_DGB', 'BTC_STR'])
 
 
 if __name__ == '__main__':
