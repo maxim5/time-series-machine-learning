@@ -5,7 +5,7 @@ __author__ = 'maxim'
 
 import os
 
-from models import Evaluator
+from evaluator import Evaluator
 from util import *
 
 

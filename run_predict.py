@@ -7,9 +7,9 @@ import os
 import numpy as np
 
 import poloniex
-from models import Evaluator
 from predict import *
 from train import *
+from train.evaluator import Evaluator
 from util import *
 
 
