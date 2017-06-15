@@ -40,7 +40,7 @@ def seconds(datetime_):
 
 
 def to_dataset(df, k, target_column, with_bias):
-  df = df[1:]
+  df = df[1:].reset_index(drop=True)
   df = df.drop(['date'], axis=1)
   target = df[target_column]
 
