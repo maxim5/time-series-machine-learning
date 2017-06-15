@@ -5,6 +5,7 @@ __author__ = 'maxim'
 
 import os
 
+# noinspection PyUnresolvedReferences
 from models import *
 from util import *
 
@@ -20,7 +21,8 @@ class ModelInfo:
 def get_model_info(path):
   model_params = _read_dict(os.path.join(path, 'model-params.txt'))
   run_params = _read_dict(os.path.join(path, 'run-params.txt'))
-  return ModelInfo(path, NeuralNetworkModel, model_params, run_params)
+  model_class = run_params['model_class']
+  return ModelInfo(path, globals()[model_class], model_params, run_params)
 
 
 def _read_dict(path):

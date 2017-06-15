@@ -27,18 +27,18 @@ class JobRunner:
     data_set = to_dataset(self._changes_df, k=params['k'], target_column=params['target'], with_bias=with_bias)
     train, test = split_dataset(data_set)
 
+    adapted = params.copy()
+    adapted['model_class'] = params['model_class'].__name__
+    info('Params=%s' % smart_str(adapted))
+
     model_params = params['model_params']
     model_params['features'] = int(train.x.shape[1])
 
-    run_params = {key: params[key] for key in ['k', 'target']}
+    run_params = {key: adapted[key] for key in ['k', 'target', 'model_class']}
     run_params.update(self._job_info.as_run_params())
 
     model = model_class(**model_params)
     evaluator = Evaluator()
-
-    adapted = params.copy()
-    adapted['model_class'] = params['model_class'].__name__
-    info('Params=%s' % smart_str(adapted))
 
     with model.session():
       model.fit(train)
