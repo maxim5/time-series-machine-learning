@@ -43,12 +43,14 @@ class JobRunner:
     with model.session():
       model.fit(train)
       train_eval, train_stats = evaluator.eval(model, train)
-      info('Train result:\n%sEval=%.6f' % (evaluator.stats_str(train_stats), train_eval))
+      train_stats_str = evaluator.stats_str(train_stats)
+      debug('Train results:\n', train_stats_str)
 
       test_eval, test_stats = evaluator.eval(model, test)
+      test_stats_str = evaluator.stats_str(test_stats)
       is_record = test_eval < self._min_eval
       marker = ' !!!' if is_record else ''
-      info('Test result:\n%sEval=%.6f%s\n' % (evaluator.stats_str(test_stats), test_eval, marker))
+      info('Test result:\n%sEval=%.6f%s\n' % (test_stats_str, test_eval, marker))
 
       if is_record:
         self._min_eval = test_eval
@@ -57,7 +59,7 @@ class JobRunner:
         dest_dir = self._job_info.get_dest_name(test_eval, params['k'])
         os.makedirs(dest_dir)
         model.save(dest_dir)
-        _save_to(dest_dir, 'stats.txt', evaluator.stats_str(test_stats))
+        _save_to(dest_dir, 'stats.txt', train_stats_str + '\n' + test_stats_str)
         _save_to(dest_dir, 'model-params.txt', smart_str(model_params))
         _save_to(dest_dir, 'run-params.txt', smart_str(run_params))
 
