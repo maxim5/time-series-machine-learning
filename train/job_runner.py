@@ -21,8 +21,6 @@ class JobRunner:
 
 
   def single_run(self, **params):
-    info('Params=%s' % smart_str(params))
-
     model_class = params['model_class']
     with_bias = model_class.DATA_WITH_BIAS
 
@@ -30,13 +28,17 @@ class JobRunner:
     train, test = split_dataset(data_set)
 
     model_params = params['model_params']
-    model_params['features'] = train.x.shape[1]
+    model_params['features'] = int(train.x.shape[1])
 
     run_params = {key: params[key] for key in ['k', 'target']}
     run_params.update(self._job_info.as_run_params())
 
     model = model_class(**model_params)
     evaluator = Evaluator()
+
+    adapted = params.copy()
+    adapted['model_class'] = params['model_class'].__name__
+    info('Params=%s' % smart_str(adapted))
 
     with model.session():
       model.fit(train)
@@ -62,7 +64,7 @@ class JobRunner:
 
   def iterate(self, iterations, params_fun):
     for i in xrange(iterations):
-      info('Iteration %s#%d' % (self._job_info.name, i + 1))
+      info('Iteration %s: %s #%d' % (self._job_info.name, self._job_info.target, i + 1))
       params = params_fun()
       self.single_run(**params)
 
