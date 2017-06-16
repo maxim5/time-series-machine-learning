@@ -13,6 +13,7 @@ from util import *
 
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+CPU_ONLY = False
 
 
 class NeuralNetworkModel(Model):
@@ -78,6 +79,8 @@ class NeuralNetworkModel(Model):
   def session(self):
     assert self._graph is not None
     config = tf.ConfigProto()
+    if CPU_ONLY:
+      config.device_count = {'GPU': 0}
     config.gpu_options.allow_growth = True  # https://github.com/vijayvee/Recursive-neural-networks-TensorFlow/issues/1
     self._session = tf.Session(graph=self._graph, config=config)
     return self._session
@@ -101,7 +104,6 @@ class NeuralNetworkModel(Model):
 
 
   def save(self, dest_dir):
-    os.makedirs(dest_dir)
     path = os.path.join(dest_dir, 'session.data')
     saver = tf.train.Saver()
     saver.save(self._session, path)

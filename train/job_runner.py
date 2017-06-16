@@ -57,7 +57,10 @@ class JobRunner:
         self._min_params = params
 
         dest_dir = self._job_info.get_dest_name(test_eval, params['k'])
+        while os.path.exists(dest_dir):
+          dest_dir = self._job_info.get_dest_name(test_eval, params['k'], random_id(4))
         os.makedirs(dest_dir)
+
         model.save(dest_dir)
         _save_to(dest_dir, 'stats.txt', train_stats_str + '\n' + test_stats_str)
         _save_to(dest_dir, 'model-params.txt', smart_str(model_params))
@@ -100,3 +103,9 @@ def _resolve_limit(limit, job_info):
 
   info('Using the default limit=1.0')
   return 1.0
+
+
+def random_id(size):
+  import string, random
+  chars = string.ascii_letters + string.digits
+  return ''.join(random.choice(chars) for _ in xrange(size))

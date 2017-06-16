@@ -26,8 +26,9 @@ class JobInfo:
   def get_source_name(self):
     return os.path.join(self.data_dir, '%s.csv' % self.name)
 
-  def get_dest_name(self, eval_, k):
-    return os.path.join(self.zoo_dir, self.name, '%s_eval=%.4f_k=%d' % (self.target, eval_, k))
+  def get_dest_name(self, eval_, k, id_=None):
+    suffix = '_' + id_ if id_ else ''
+    return os.path.join(self.zoo_dir, self.name, '%s_eval=%.4f_k=%d%s' % (self.target, eval_, k, suffix))
 
   def get_current_eval_results(self):
     directory = os.path.join(self.zoo_dir, self.name)
@@ -55,7 +56,7 @@ def _parse_model_file(file_name):
   if not '=' in file_name:
     return {}
 
-  match = re.match('([a-z]+)_eval=([0-9.]+)_k=([0-9]+)', file_name)
+  match = re.match('([a-z]+)_eval=([0-9.]+)_k=([0-9]+)(_\w*)?', file_name)
   if not match:
     return {}
 
