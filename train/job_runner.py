@@ -76,7 +76,7 @@ class JobRunner:
 
   def print_result(self):
     if self._min_params is None:
-      warn('Nothing found!!!\n')
+      info('Nothing found...\n')
     else:
       info('*** Best result: ***\n' + \
            'Eval=%.5f\n' % self._min_eval + \
