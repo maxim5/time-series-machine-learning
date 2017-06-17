@@ -77,7 +77,7 @@ def to_dataset_for_prediction(df, k, with_bias):
       row = np.insert(row, 0, 1)
     x[i] = row
 
-  debug('data set: %s' % x.shape)
+  debug('data set: %s' % str(x.shape))
   return x
 
 
