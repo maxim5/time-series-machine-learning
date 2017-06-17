@@ -48,6 +48,10 @@ def predict_model(changes_df, path):
 def predict_all_models(changes_df, name, accept):
   home_dir = '_zoo/%s' % name
   models = [dir for dir in os.listdir(home_dir) if accept(dir)]
+  if not models:
+    info('No models found for %s' % name)
+    return
+
   predictions = []
   for model in models:
     value = predict_model(changes_df, os.path.join(home_dir, model))
