@@ -62,6 +62,25 @@ def to_dataset(df, k, target_column, with_bias):
   return DataSet(x, y)
 
 
+def to_dataset_for_prediction(df, k, with_bias):
+  df = df[1:].reset_index(drop=True)
+  df = df.drop(['date'], axis=1)
+
+  n, cols = df.shape
+  windows_num = n - k + 1
+  x = np.empty([windows_num, k * cols + int(with_bias)])
+
+  for i in xrange(windows_num):
+    window = df[i:i+k]
+    row = window.as_matrix().reshape((-1,))
+    if with_bias:
+      row = np.insert(row, 0, 1)
+    x[i] = row
+
+  debug('data set: %s' % x.shape)
+  return x
+
+
 def split_dataset(dataset, ratio=None):
   size = dataset.size
   if ratio is None:
