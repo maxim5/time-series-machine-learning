@@ -9,10 +9,10 @@ from models import *
 from train import JobRunner, JobInfo
 
 
-def iterate_neural(job_info, job_runner, iterations=10):
+def iterate_neural(job_info, job_runner, iterations=10, k_lim=21):
   job_runner.iterate(iterations, params_fun=lambda: {
     'target': job_info.target,
-    'k': np.random.randint(1, 21),
+    'k': np.random.randint(1, k_lim),
     'model_class': NeuralNetworkModel,
     'model_params': {
       'batch_size': np.random.choice([500, 1000, 2000, 4000]),
@@ -45,6 +45,21 @@ def iterate_linear(job_info, job_runner, k_lim=25):
     })
 
 
+def iterate_xgb(job_info, job_runner, iterations=10, k_lim=21):
+  job_runner.iterate(iterations, params_fun=lambda: {
+    'target': job_info.target,
+    'k': np.random.randint(1, k_lim),
+    'model_class': XgbModel,
+    'model_params': {
+      'max_depth': np.random.randint(3, 8),
+      'n_estimators': np.random.randint(100, 300),
+      'learning_rate': 10 ** np.random.uniform(-2, -0.5),
+      'gamma': np.random.uniform(0, 0.1),
+      'subsample': np.random.uniform(0.5, 1),
+    }
+  })
+
+
 def main():
   while True:
     for ticker in ['BTC_ETH', 'BTC_DGB', 'BTC_STR', 'BTC_ZEC']:
@@ -54,6 +69,7 @@ def main():
           job_runner = JobRunner(job_info, limit=np.mean)
           iterate_linear(job_info, job_runner)
           iterate_neural(job_info, job_runner)
+          iterate_xgb(job_info, job_runner)
           job_runner.print_result()
 
 
