@@ -113,11 +113,9 @@ class NeuralNetworkModel(Model):
     path = os.path.join(dest_dir, 'session.data')
     saver = tf.train.Saver()
     saver.save(self._session, path)
-    info('Session saved to %s' % path)
 
 
   def restore(self, source_dir):
     path = os.path.join(source_dir, 'session.data')
     saver = tf.train.Saver()
     saver.restore(self._session, path)
-    info('Session restored from %s' % path)

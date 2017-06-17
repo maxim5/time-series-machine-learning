@@ -65,6 +65,7 @@ class JobRunner:
         _save_to(dest_dir, 'stats.txt', train_stats_str + '\n' + test_stats_str)
         _save_to(dest_dir, 'model-params.txt', smart_str(model_params))
         _save_to(dest_dir, 'run-params.txt', smart_str(run_params))
+        debug('Model saved to %s' % dest_dir)
 
 
   def iterate(self, iterations, params_fun):
