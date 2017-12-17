@@ -39,7 +39,7 @@ class NeuralNetworkModel(Model):
       y = tf.placeholder(tf.float32, shape=[None], name='y')
       mode = tf.placeholder(tf.string, name='mode')
 
-      init = lambda shape: tf.random_normal(shape=shape) * self._init_sigma
+      rand_init = lambda shape: tf.random_normal(shape=shape, stddev=self._init_sigma)
 
       layer = x
       dimension = self._features
@@ -47,8 +47,8 @@ class NeuralNetworkModel(Model):
       for idx, layer_params in enumerate(self._layers):
         with tf.variable_scope('l_%d' % idx):
           size = layer_params.get('size', 50)
-          W = tf.Variable(init([dimension, size]), name='W%d' % idx)
-          b = tf.Variable(init([size]), name='b%d' % idx)
+          W = tf.Variable(rand_init([dimension, size]), name='W%d' % idx)
+          b = tf.Variable(rand_init([size]), name='b%d' % idx)
           layer = tf.matmul(layer, W) + b
 
           batchnorm = layer_params.get('batchnorm', False)
@@ -65,8 +65,8 @@ class NeuralNetworkModel(Model):
           dimension = size
 
       with tf.variable_scope('l_out'):
-        W_out = tf.Variable(init([dimension, 1]), name='W')
-        b_out = tf.Variable(init([1]), name='b')
+        W_out = tf.Variable(rand_init([dimension, 1]), name='W')
+        b_out = tf.Variable(rand_init([1]), name='b')
         output_layer = tf.matmul(layer, W_out) + b_out
         reg += self._lambda * tf.nn.l2_loss(W_out)
 
