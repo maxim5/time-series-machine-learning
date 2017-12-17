@@ -2,5 +2,6 @@
 __author__ = 'maxim'
 
 from linear_model import LinearModel
+from lstm_model import LstmModel
 from nn_model import NeuralNetworkModel
 from xgboost_model import XgbModel

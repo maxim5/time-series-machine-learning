@@ -33,6 +33,7 @@ class JobRunner:
 
     model_params = params['model_params']
     model_params['features'] = int(train.x.shape[1])
+    model_params['time_steps'] = params['k']
 
     run_params = {key: adapted[key] for key in ['k', 'model_class']}
     run_params.update(self._job_info.as_run_params())

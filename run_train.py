@@ -35,6 +35,22 @@ def random_layers(num):
   } for _ in xrange(num)]
 
 
+def iterate_lstm(job_info, job_runner, k_lim=21):
+  job_runner.single_run(**{
+    'target': job_info.target,
+    'k': np.random.randint(1, k_lim),
+    'model_class': LstmModel,
+    'model_params': {
+      'batch_size': np.random.choice([500, 1000, 2000, 4000]),
+      'epochs': 100,
+      'learning_rate': 10 ** np.random.uniform(-10, -2),
+      'layers': random_layers(np.random.randint(1, 4)),
+      'cost_func': np.random.choice(['l1', 'l2']),
+      'lambda': 10 ** np.random.uniform(-8, -2),
+    }
+  })
+
+
 def iterate_linear(job_info, job_runner, k_lim=25):
   for k in xrange(1, k_lim):
     job_runner.single_run(**{
