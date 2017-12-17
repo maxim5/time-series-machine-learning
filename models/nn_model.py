@@ -6,9 +6,8 @@ __author__ = 'maxim'
 import os
 import tensorflow as tf
 
-from nn_ops import ACTIVATIONS, COST_FUNCTIONS, dropout, batch_normalization
-
 from model import Model
+from nn_ops import ACTIVATIONS, COST_FUNCTIONS, dropout, batch_normalization
 from util import *
 
 
