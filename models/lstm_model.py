@@ -10,13 +10,14 @@ from tensorflow_model import TensorflowModel
 
 
 class RecurrentModel(TensorflowModel):
+  EXPECTS_TIME_PARAM = True
+
   def __init__(self, **params):
     TensorflowModel.__init__(self, **params)
 
     self._time_steps = params.get('time_steps', 10)
     self._features = self._features / self._time_steps  # because features are unrolled
-    self._hidden_size = 32
-    # self._layers = params.get('layers', [])
+    self._layers = params.get('layers', [])
     self._lambda = params.get('lambda', 0.005)
     self._cost_func = COST_FUNCTIONS[params.get('cost_func', 'l2')]
 
@@ -34,8 +35,11 @@ class RecurrentModel(TensorflowModel):
       # unroll the features into time-series
       x_series = tf.reshape(x, [-1, self._time_steps, self._features])
 
-      lstm_cell = tf.nn.rnn_cell.LSTMCell(num_units=self._hidden_size)
-      multi_cell = tf.nn.rnn_cell.MultiRNNCell(cells=[lstm_cell])
+      cells = []
+      for layer_size in self._layers:
+        lstm_cell = tf.nn.rnn_cell.LSTMCell(num_units=layer_size)
+        cells.append(lstm_cell)
+      multi_cell = tf.nn.rnn_cell.MultiRNNCell(cells=cells)
       outputs, states = tf.nn.dynamic_rnn(multi_cell, x_series, dtype=tf.float32)
 
       top_layer_h_state = states[-1].h

@@ -19,14 +19,14 @@ def iterate_neural(job_info, job_runner, iterations=10, k_lim=21):
       'epochs': 100,
       'learning_rate': 10 ** np.random.uniform(-10, -2),
       'init_sigma': 10 ** np.random.uniform(-10, -3),
-      'layers': random_layers(np.random.randint(1, 4)),
+      'layers': _random_layers(np.random.randint(1, 4)),
       'cost_func': np.random.choice(['l1', 'l2']),
       'lambda': 10 ** np.random.uniform(-8, -2),
     }
   })
 
 
-def random_layers(num):
+def _random_layers(num):
   return [{
     'size': np.random.randint(50, 200),
     'batchnorm': np.random.choice([True, False]),
@@ -35,18 +35,18 @@ def random_layers(num):
   } for _ in xrange(num)]
 
 
-def iterate_lstm(job_info, job_runner, iterations=10):
+def iterate_rnn(job_info, job_runner, iterations=10):
   job_runner.iterate(iterations, params_fun=lambda: {
     'target': job_info.target,
     'k': np.random.choice([16, 32, 64]),
     'model_class': RecurrentModel,
     'model_params': {
-      'batch_size': np.random.choice([500, 1000, 2000, 4000]),
+      'batch_size': np.random.choice([500, 1000, 2000]),
       'epochs': 100,
       'learning_rate': 10 ** np.random.uniform(-10, -2),
-      # 'layers': random_layers(np.random.randint(1, 4)),
+      'layers': [np.random.choice([16, 32, 64]) for _ in xrange(np.random.randint(1, 4))],
       'cost_func': np.random.choice(['l1', 'l2']),
-      'lambda': 10 ** np.random.uniform(-8, -2),
+      'lambda': 10 ** np.random.uniform(-8, -3),
     }
   })
 
@@ -86,7 +86,7 @@ def main():
           iterate_linear(job_info, job_runner)
           iterate_neural(job_info, job_runner)
           iterate_xgb(job_info, job_runner)
-          iterate_lstm(job_info, job_runner)
+          iterate_rnn(job_info, job_runner)
           job_runner.print_result()
 
 
