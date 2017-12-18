@@ -38,13 +38,13 @@ def _random_layers(num):
 def iterate_rnn(job_info, job_runner, iterations=10):
   job_runner.iterate(iterations, params_fun=lambda: {
     'target': job_info.target,
-    'k': np.random.choice([16, 32, 64]),
+    'k': np.random.choice([32, 48, 64, 96]),
     'model_class': RecurrentModel,
     'model_params': {
-      'batch_size': np.random.choice([500, 1000, 2000]),
+      'batch_size': np.random.choice([1000, 2000, 4000]),
       'epochs': 100,
       'learning_rate': 10 ** np.random.uniform(-10, -2),
-      'layers': [np.random.choice([16, 32, 64]) for _ in xrange(np.random.randint(1, 4))],
+      'layers': [np.random.choice([32, 64, 96]) for _ in xrange(np.random.randint(1, 4))],
       'cost_func': np.random.choice(['l1', 'l2']),
       'lambda': 10 ** np.random.uniform(-8, -3),
     }
@@ -82,7 +82,7 @@ def main():
       for period in ['4h', 'day']:
         for target in ['high']:
           job_info = JobInfo('_data', '_zoo', name='%s_%s' % (ticker, period), target=target)
-          job_runner = JobRunner(job_info, limit=np.mean)
+          job_runner = JobRunner(job_info, limit=np.median)
           iterate_linear(job_info, job_runner)
           iterate_neural(job_info, job_runner)
           iterate_xgb(job_info, job_runner)
