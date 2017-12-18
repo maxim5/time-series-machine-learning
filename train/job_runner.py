@@ -96,13 +96,14 @@ def _save_to(dest_dir, name, data):
 
 def _resolve_limit(limit, job_info):
   if not callable(limit):
+    info('Using the hard limit=%.5f' % limit)
     return limit
 
   results = job_info.get_current_eval_results()
   if results:
-    info('Auto-detected current results for %s: %s' % (job_info.name, results))
+    info('Auto-detected current model results for %s: %s' % (job_info.name, results))
     value = limit(results)
-    info('Using the limit=%.5f' % value)
+    info('Using the limit=%.5f (computed by "%s" function)' % (value, limit.__name__))
     return value
 
   info('Using the default limit=1.0')
