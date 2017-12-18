@@ -23,6 +23,7 @@ class JobRunner:
   def single_run(self, **params):
     model_class = params['model_class']
     with_bias = model_class.DATA_WITH_BIAS
+    expects_k = model_class.EXPECTS_TIME_PARAM
 
     data_set = to_dataset(self._changes_df, k=params['k'], target_column=params['target'], with_bias=with_bias)
     train, test = split_dataset(data_set)
@@ -33,7 +34,8 @@ class JobRunner:
 
     model_params = params['model_params']
     model_params['features'] = int(train.x.shape[1])
-    model_params['time_steps'] = params['k']
+    if expects_k:
+      model_params['time_steps'] = params['k']
 
     run_params = {key: adapted[key] for key in ['k', 'model_class']}
     run_params.update(self._job_info.as_run_params())
