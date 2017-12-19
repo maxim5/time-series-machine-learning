@@ -10,6 +10,9 @@ from train import JobRunner, JobInfo
 
 
 def iterate_neural(job_info, job_runner, iterations=10, k_lim=21):
+  if NeuralNetworkModel is None:
+    return
+
   job_runner.iterate(iterations, params_fun=lambda: {
     'target': job_info.target,
     'k': np.random.randint(1, k_lim),
@@ -36,6 +39,9 @@ def _random_layers(num):
 
 
 def iterate_rnn(job_info, job_runner, iterations=10):
+  if RecurrentModel is None:
+    return
+
   job_runner.iterate(iterations, params_fun=lambda: {
     'target': job_info.target,
     'k': np.random.choice([32, 48, 64, 96]),
@@ -52,6 +58,9 @@ def iterate_rnn(job_info, job_runner, iterations=10):
 
 
 def iterate_linear(job_info, job_runner, k_lim=25):
+  if LinearModel is None:
+    return
+
   for k in xrange(1, k_lim):
     job_runner.single_run(**{
       'target': job_info.target,
@@ -62,6 +71,9 @@ def iterate_linear(job_info, job_runner, k_lim=25):
 
 
 def iterate_xgb(job_info, job_runner, iterations=10, k_lim=21):
+  if XgbModel is None:
+    return
+
   job_runner.iterate(iterations, params_fun=lambda: {
     'target': job_info.target,
     'k': np.random.randint(1, k_lim),
