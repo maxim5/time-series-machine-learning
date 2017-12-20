@@ -47,8 +47,8 @@ class RecurrentModel(TensorflowModel):
       cells = []
       cell_class = CELL_TYPES[self._cell_type]
       for layer_size in self._layers:
-        lstm_cell = cell_class(num_units=layer_size)
-        cells.append(lstm_cell)
+        cell = cell_class(num_units=layer_size)
+        cells.append(cell)
       multi_cell = tf.nn.rnn_cell.MultiRNNCell(cells=cells)
       outputs, states = tf.nn.dynamic_rnn(multi_cell, x_series, dtype=tf.float32)
 
