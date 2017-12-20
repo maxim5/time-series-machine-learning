@@ -9,7 +9,7 @@ from evaluator import Evaluator
 from util import *
 
 
-class JobRunner:
+class JobRunner(object):
   def __init__(self, job_info, limit):
     raw_df = read_df(job_info.get_source_name())
     changes_df = to_changes(raw_df)

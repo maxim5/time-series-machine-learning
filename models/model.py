@@ -3,7 +3,7 @@
 __author__ = 'maxim'
 
 
-class Model:
+class Model(object):
   DATA_WITH_BIAS = False
   EXPECTS_TIME_PARAM = False
 

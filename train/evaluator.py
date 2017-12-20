@@ -7,10 +7,7 @@ import numpy as np
 import pandas as pd
 
 
-class Evaluator:
-  def __init__(self):
-    pass
-
+class Evaluator(object):
   def eval(self, model, test_set):
     prediction = model.predict(test_set.x)
     stats = self._compute_stats(prediction, test_set.y)

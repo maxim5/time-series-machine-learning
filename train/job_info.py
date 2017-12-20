@@ -7,7 +7,7 @@ import os
 import re
 
 
-class JobInfo:
+class JobInfo(object):
   def __init__(self, data_dir, zoo_dir, name, target):
     self.data_dir = data_dir
     self.zoo_dir = zoo_dir
