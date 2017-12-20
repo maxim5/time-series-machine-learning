@@ -44,15 +44,18 @@ def iterate_rnn(job_info, job_runner, iterations=10):
 
   job_runner.iterate(iterations, params_fun=lambda: {
     'target': job_info.target,
-    'k': np.random.choice([32, 48, 64, 96]),
+    'k': np.random.choice([24, 32, 48, 64, 96]),
     'model_class': RecurrentModel,
     'model_params': {
       'batch_size': np.random.choice([1000, 2000, 4000]),
-      'epochs': 100,
+      'epochs': 50,
       'learning_rate': 10 ** np.random.uniform(-10, -2),
       'layers': [np.random.choice([32, 64, 96]) for _ in xrange(np.random.randint(1, 4))],
+      'cell_type': np.random.choice(['lstm', 'gru']),
+      'double_state': np.random.choice([True, False]),
+      'dropout': np.random.uniform(0.5, 1.0),
       'cost_func': np.random.choice(['l1', 'l2']),
-      'lambda': 10 ** np.random.uniform(-8, -3),
+      'lambda': 10 ** np.random.uniform(-9, -6),
     }
   })
 
