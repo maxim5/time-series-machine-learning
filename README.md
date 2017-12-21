@@ -9,13 +9,17 @@ Currently supported:
 
 # Requirements
 
-Required dependency: `numpy`. Other dependencies are optional, but recommended to diversify the final ensemble: `tensorflow`, `xgboost`.
-Python version: 2.7
+Required dependency: `numpy`. Other dependencies are optional, but to diversify the final models ensemble, 
+it's recommended to install these packages:  `tensorflow`, `xgboost`.
+Tested with python version: 2.7
 
 # Fetching the data
 
-Data format is standard security trading info (date, high, low, open, close, volume, quoteVolume, weightedAverage).
-Currently, has been tested with crypto-currencies. Out of the box supported data provider: [Poloniex exchange](poloniex.com).
+There is a trading data provider in the repo - from [Poloniex exchange](poloniex.com). 
+Currently, all models have been tested with crypto-currencies' charts.
+
+Fetched data format is standard security [OHLO trading info](https://en.wikipedia.org/wiki/Open-high-low-close_chart): date, high, low, open, close, volume, quoteVolume, weightedAverage.
+But the models are agnostic of the particular time series features.
 
 To fetch the data, run from the root directory:
 
@@ -28,11 +32,13 @@ To fetch the data, run from the root directory:
 # Training the model
 
 ```sh
+# Trains all models until stopped.
 ./run_train.py
 ```
 
 By default, the script trains all available models with random hyper-parameters, cross-validates each model and
 saves the result model if it's better than current average. All models are placed to the `_zoo` directory.
+
 It is possible that early saved models will be much worse than later ones, you're always welcome to clean-up the models
 you're definitely not interested in.
 
