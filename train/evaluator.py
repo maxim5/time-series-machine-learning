@@ -8,6 +8,10 @@ import pandas as pd
 
 
 class Evaluator(object):
+  def __init__(self, risk_factor=1.0):
+    super(Evaluator, self).__init__()
+    self._risk_factor = risk_factor
+
   def eval(self, model, test_set):
     prediction = model.predict(test_set.x)
     stats = self._compute_stats(prediction, test_set.y)
@@ -37,8 +41,7 @@ class Evaluator(object):
     }
 
   def _evaluate(self, stats):
-    risk_factor = 1.0
-    return stats['mae'] + risk_factor * stats['stdae']
+    return stats['mae'] + self._risk_factor * stats['stdae']
 
 
 def _series_stats(series):

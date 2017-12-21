@@ -41,7 +41,7 @@ class JobRunner(object):
     run_params.update(self._job_info.as_run_params())
 
     model = model_class(**model_params)
-    evaluator = Evaluator()
+    evaluator = Evaluator(*params.get('eval_params', {}))
 
     with model.session():
       model.fit(train)
