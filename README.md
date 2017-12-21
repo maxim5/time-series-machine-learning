@@ -1,6 +1,6 @@
-# Trading Prediction via Machine Learning
+# Time Series Prediction with Machine Learning
 
-A collection of different Machine Learning models trying to predict the future market price given the currency chart.
+A collection of different Machine Learning models trying to predict the time series, concretely the market price for given the currency chart.
 Currently supported:
 - Ordinary linear model
 - Gradient boosting (using `xgboost` implementation)
