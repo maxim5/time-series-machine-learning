@@ -13,9 +13,9 @@ Required dependency: `numpy`. Other dependencies are optional, but to diversify 
 it's recommended to install these packages:  `tensorflow`, `xgboost`.
 Tested with python version: 2.7
 
-# Fetching the data
+# Fetching data
 
-There is a trading data provider in the repo - from [Poloniex exchange](poloniex.com). 
+There is one built-in data provider, which fetches the data from [Poloniex exchange](https://poloniex.com/exchange).
 Currently, all models have been tested with crypto-currencies' charts.
 
 Fetched data format is standard security [OHLO trading info](https://en.wikipedia.org/wiki/Open-high-low-close_chart): date, high, low, open, close, volume, quoteVolume, weightedAverage.
