@@ -62,9 +62,11 @@ def predict_all_models(changes_df, name, accept):
 
 
 def main():
+  tickers = get_tickers()
   period = 'day'
-  for ticker in ['BTC_ETH', 'BTC_DGB', 'BTC_ZEC', 'BTC_STR']:
-    raw_df = poloniex.get_latest_data(ticker, period=period, depth=25)
+
+  for ticker in tickers:
+    raw_df = poloniex.get_latest_data(ticker, period=period, depth=100)
     changes_df = to_changes(raw_df)
     predict_all_models(changes_df, '%s_%s' % (ticker, period), lambda name: name.startswith('high_'))
 

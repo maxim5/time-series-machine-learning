@@ -4,10 +4,12 @@ __author__ = 'maxim'
 
 
 import poloniex
+import util
 
 
 def main():
-  poloniex.update_selected(tickers=['BTC_ETH', 'BTC_DGB', 'BTC_STR', 'BTC_ZEC'])
+  tickers = util.get_tickers()
+  poloniex.update_selected(tickers)
 
 
 if __name__ == '__main__':

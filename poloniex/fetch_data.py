@@ -45,7 +45,7 @@ def update_ticker(ticker, period, dest_dir):
     info("Data frame saved to %s" % path)
 
 
-def update_selected(tickers, periods=api.AVAILABLE_PERIODS, data_dir='_data', sleep=1):
+def update_selected(tickers, periods=api.AVAILABLE_PERIODS, data_dir='_data', sleep=0.5):
   if not os.path.exists(data_dir):
     os.makedirs(data_dir)
 
