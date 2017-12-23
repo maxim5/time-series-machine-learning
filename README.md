@@ -92,8 +92,8 @@ Saved models consist of the following files:
     - The `k` value, which denotes the input length, 
       e.g., `k=16` with `period=day` means the model needs 16 days to predict the next one.
  - `model-params.txt`: holds the specific hyper-parameters that the model was trained with.
- - `stats.txt`: evaluation statistics (for both training and test sets).
- - one or several files holding the internal weights.
+ - `stats.txt`: evaluation statistics (for both training and test sets, see the details below).
+ - One or several files holding the internal weights.
  
 Each model is evaluated for both training and test set, but the final evaluation score is computed *only from the test set*.
   
@@ -112,9 +112,11 @@ Relative residuals:  mean=1.1517 std=0.8706 percentile=[0%=0.0049 25%=0.6961 50%
 ```
 
 You should read it like this: 
- - The model is on average `0.019528` or about 2% away from the ground truth change. 
+ - The model is on average `0.019528` or about 2% away from the ground truth percent change. 
  - The standard deviation of residuals is also about 2%: `0.023731`.
- - The model is 63% right of the sign of the target value: `0.635158`.
+ - The model is 63% right about the sign of the change: `0.635158`. 
+   For example, this means that when the model says *"Buy!"*,
+   it may be wrong about how high the predicted price will be, but the price will go up in 63% of the cases.
  - Residuals and relative residuals show the percentiles of error distribution. In particular, in 75% of the cases
    the residual percent value is less than 2.5% away from the ground truth and no more than 124% larger relatively.
    
@@ -127,11 +129,12 @@ By default, `risk_factor=1.0`, hence the model above is evaluated at `0.0433`.
 Running predictions
 -------------------
 
-The `run_predict.py` script downloads the current trading info for the selected currencies and runs all models that 
+The `run_predict.py` script downloads the current trading data for the selected currencies and runs all models that 
 have been saved for these currencies, period and target.
 
 ```sh
 # Runs all models for BTC_ETH ticker and outputs the aggregated prediction.
+# Default period: day, default target: high.
 ./run_predict.py BTC_ETH
 ```
 
