@@ -112,8 +112,10 @@ Relative residuals:  mean=1.1517 std=0.8706 percentile=[0%=0.0049 25%=0.6961 50%
 ```
 
 You should read it like this: 
- - The model is on average `0.019528` or about 2% away from the ground truth percent change. 
- - The standard deviation of residuals is also about 2%: `0.023731`.
+ - The model is on average `0.019528` or about 2% away from the ground truth percent change (absolute difference),
+   but only `-0.001543` away taking into account the sign. In other words, the model underestimates and overestimates the
+   target equally, usually by 2%.
+ - The standard deviation of residuals is also about 2%: `0.023731`, so it's rarely far off the target.
  - The model is 63% right about the sign of the change: `0.635158`. 
    For example, this means that when the model says *"Buy!"*,
    it may be wrong about how high the predicted price will be, but the price will go up in 63% of the cases.
