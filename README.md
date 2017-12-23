@@ -3,18 +3,20 @@
 A collection of different Machine Learning models predicting the time series, 
 concretely the market price for given the currency chart.
 
-# Requirements
+Requirements
+------------
 
 Required dependency: `numpy`. Other dependencies are optional, but to diversify the final models ensemble, 
 it's recommended to install these packages:  `tensorflow`, `xgboost`.
 Tested with python version: 2.7
 
-# Fetching data
+Fetching data
+-------------
 
 There is one built-in data provider, which fetches the data from [Poloniex exchange](https://poloniex.com/exchange).
 Currently, all models have been tested with crypto-currencies' charts.
 
-Fetched data format is standard security [OHLO trading info](https://en.wikipedia.org/wiki/Open-high-low-close_chart): 
+Fetched data format is standard security [OHLC trading info](https://en.wikipedia.org/wiki/Open-high-low-close_chart): 
 date, high, low, open, close, volume, quoteVolume, weightedAverage.
 But the models are agnostic of the particular time series features.
 
@@ -38,7 +40,8 @@ and is stored in `_data` directory. One can specify the tickers via command-line
 
 **Note**: the second and following runs *won't* fetch all data from scratch, but just the update from the last run till now.
 
-# Training the models
+Training the models
+-------------------
 
 ```sh
 # Trains all models until stopped.
@@ -61,7 +64,8 @@ Currently supported methods:
 - Feed-forward neural network (in `tensorflow`)
 - Recurrent neural network: LSTM, GRU, one or multi-layered (in `tensorflow` as well)
 
-# Running predictions
+Running predictions
+-------------------
 
 ```sh
 # Runs all models for BTC_ETH ticker and outputs the aggregated prediction.
@@ -71,6 +75,7 @@ Currently supported methods:
 Downloads the current trading info for the selected currencies and runs all models that 
 have been saved for these currencies and time period.
 
-# License
+License
+-------
 
 Apache 2.0
