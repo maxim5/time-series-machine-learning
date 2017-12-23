@@ -54,7 +54,7 @@ def iterate_rnn(job_info, job_runner, iterations=10):
       'layers': [np.random.choice([32, 64, 96]) for _ in xrange(np.random.randint(1, 4))],
       'cell_type': np.random.choice(['lstm', 'gru']),
       'double_state': np.random.choice([True, False]),
-      'dropout': np.random.uniform(0.5, 1.0),
+      'dropout': np.random.uniform(0.0, 1.0),
       'cost_func': np.random.choice(['l1', 'l2']),
       'lambda': 10 ** np.random.uniform(-10, -6),
     }

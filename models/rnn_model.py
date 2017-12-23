@@ -26,7 +26,7 @@ class RecurrentModel(TensorflowModel):
     self._layers = params.get('layers', [])
     self._cell_type = params.get('cell_type', 'lstm')
     self._double_state = params.get('double_state', False)
-    self._dropout = params.get('dropout', 1.0)
+    self._dropout = params.get('dropout', 0.0)  # drop probability (not keep!)
     self._lambda = params.get('lambda', 0.005)
     self._cost_func = COST_FUNCTIONS[params.get('cost_func', 'l2')]
 
@@ -66,7 +66,7 @@ class RecurrentModel(TensorflowModel):
         # unexpected cell type, but let's expect the standard state value
         top_layer_state = states[-1]
 
-      dropout_layer = tf.layers.dropout(top_layer_state, self._dropout, training=tf.equal(mode, 'train'))
+      dropout_layer = tf.layers.dropout(top_layer_state, rate=self._dropout, training=tf.equal(mode, 'train'))
       output_layer = tf.layers.dense(dropout_layer, units=1,
                                      activation=tf.nn.elu,
                                      kernel_initializer=tf.glorot_uniform_initializer(),
