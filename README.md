@@ -1,14 +1,15 @@
 # Time Series Prediction with Machine Learning
 
 A collection of different Machine Learning models predicting the time series, 
-concretely the market price for given the currency chart.
+concretely the market price for given the currency chart and target.
 
 Requirements
 ------------
 
 Required dependency: `numpy`. Other dependencies are optional, but to diversify the final models ensemble, 
 it's recommended to install these packages:  `tensorflow`, `xgboost`.
-Tested with python version: 2.7
+
+Tested with python versions: 2.7.14, 3.6.0.
 
 Fetching data
 -------------
@@ -18,7 +19,7 @@ Currently, all models have been tested with crypto-currencies' charts.
 
 Fetched data format is standard security [OHLC trading info](https://en.wikipedia.org/wiki/Open-high-low-close_chart): 
 date, high, low, open, close, volume, quoteVolume, weightedAverage.
-But the models are agnostic of the particular time series features.
+But the models are agnostic of the particular time series features and can be trained with sub- or superset of these features.
 
 To fetch the data, run `run_fetch.py` script from the root directory:
 
@@ -55,18 +56,29 @@ To start training, run `run_train.py` script from the root directory:
 ```
 
 By default, the script trains all available methods (see below) with random hyper-parameters, cross-validates each model and
-saves the result weights if the performance is better than current average. All models are placed to the `_zoo` directory
-(note: it is possible that early saved models will perform much worse than later ones, so 
-you're always welcome to clean-up the models you're definitely not interested in).
+saves the result weights if the performance is better than current average (the limit can be configured). 
 
-Supported methods
--------------------
+All models are placed to the `_zoo` directory (note: it is possible that early saved models will perform much worse than 
+later ones, so you're welcome to clean-up the models you're definitely not interested in, because they can only spoil 
+the final ensemble).
+
+**Note 1**: specifying multiple periods and targets will force the script to train all combinations of those. 
+Currently, the models *do not* reuse weights for different targets. In other words, if set `--target=low,high`, 
+it will train *different* models particularly for `low` and for `high`.
+
+**Note 2**: under the hood, the models work with transformed data, 
+in particular `high`, `low`, `open`, `close`, `volume` are transform to *percent changes*. Hence, the prediction for these
+columns is also *percent changes*.
+
+Machine Learning methods
+------------------------
 
 Currently supported methods:
-- Ordinary linear model
-- Gradient boosting (using `xgboost` implementation)
-- Feed-forward neural network (in `tensorflow`)
-- Recurrent neural network: LSTM, GRU, one or multi-layered (in `tensorflow` as well)
+- Ordinary linear model. Even though it's very simple, as it turns out, the linear regression shows pretty good results
+  and compliments the more complex models in the final ensemble.
+- Gradient boosting (using `xgboost` implementation).
+- Deep neural network (in `tensorflow`).
+- Recurrent neural network: LSTM, GRU, one or multi-layered (in `tensorflow` as well).
 
 Inspecting the model
 --------------------
@@ -75,13 +87,42 @@ Saved models consist of the following files:
  - `run-params.txt`: each model has the following run parameters:
     - Ticker name, e.g., `BTC_ETH`.
     - Time period, e.g. `4h`.
-    - Target column, e.g. `high` (means the model is predicting the next high price).
+    - Target column, e.g. `high` (means the model ies predicting the next high price).
     - Model class, e.g. `RecurrentModel`.
     - The `k` value, which denotes the input length, 
       e.g., `k=16` with `period=day` means the model needs 16 days to predict the next one.
  - `model-params.txt`: holds the specific hyper-parameters that the model was trained with.
- - `stats.txt`: evaluation statistic.
+ - `stats.txt`: evaluation statistics (for both training and test sets).
  - one or several files holding the internal weights.
+ 
+Each model is evaluated for both training and test set, but the final evaluation score is computed *only from the test set*.
+  
+Here's the example report:
+
+```
+# Test results:
+Mean absolute error: 0.019528
+SD absolute error:   0.023731
+Sign accuracy:       0.635158
+Mean squared error:  0.000944
+Sqrt of MSE:         0.030732
+Mean error:          -0.001543
+Residuals stats:     mean=0.0195 std=0.0238 percentile=[0%=0.0000 25%=0.0044 50%=0.0114 75%=0.0252 90%=0.0479 100%=0.1917]
+Relative residuals:  mean=1.1517 std=0.8706 percentile=[0%=0.0049 25%=0.6961 50%=0.9032 75%=1.2391 90%=2.3504 100%=4.8597]
+```
+
+You should read it like this: 
+ - The model is on average `0.019528` or about 2% away from the ground truth change. 
+ - The standard deviation of residuals is also about 2%: `0.023731`.
+ - The model is 63% right of the sign of the target value: `0.635158`.
+ - Residuals and relative residuals show the percentiles of error distribution. In particular, in 75% of the cases
+   the residual percent value is less than 2.5% away from the ground truth and no more than 124% larger relatively.
+   
+   Example: if `truth=0.01` and `prediction=0.02`, then `residual=0.01` (1% away) and `relative_residual=1.0` (100% larger).
+   
+In the end, the report is summarized to one evaluation result, which is `mean_abs_error + risk_factor * sd_abs_error`.
+You can vary the `risk_factor` to prefer the models that are better or worse on average vs in the worst case. 
+By default, `risk_factor=1.0`, hence the model above is evaluated at `0.0433`.
 
 Running predictions
 -------------------
