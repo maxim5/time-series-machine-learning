@@ -65,7 +65,7 @@ def predict_all_models(changes_df, name, accept):
 
 
 def main():
-  tickers = get_tickers()
+  tickers = get_tickers(default=[])
   period = 'day'
 
   for ticker in tickers:
