@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+
+from __future__ import print_function
+
 __author__ = 'maxim'
 
 
@@ -6,7 +9,7 @@ LOG_LEVEL = 1
 
 def log(*msg):
   import datetime
-  print '[%s]' % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), ' '.join([str(it) for it in msg])
+  print('[%s]' % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), ' '.join([str(it) for it in msg]))
 
 def set_silence():
   global LOG_LEVEL
