@@ -8,8 +8,8 @@ import util
 
 
 def main():
-  tickers = util.get_tickers()
-  poloniex.update_selected(tickers)
+  tickers, periods, _ = util.parse_command_line(default_periods=poloniex.AVAILABLE_PERIODS)
+  poloniex.update_selected(tickers, periods)
 
 
 if __name__ == '__main__':

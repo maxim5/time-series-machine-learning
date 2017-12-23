@@ -12,6 +12,7 @@ from util import *
 
 
 COLUMNS = ['date', 'high', 'low', 'open', 'close', 'volume', 'quoteVolume', 'weightedAverage']
+PERIODS = ['5m', '15m', '30m', '2h', '4h', 'day']
 
 
 def get_all_tickers_list():

@@ -93,10 +93,7 @@ def iterate_xgb(job_info, job_runner, iterations=10, k_lim=21):
 
 
 def main():
-  tickers = util.get_tickers()
-  periods = ['4h', 'day']
-  targets = ['high']
-
+  tickers, periods, targets = util.parse_command_line()
   while True:
     for ticker in tickers:
       for period in periods:

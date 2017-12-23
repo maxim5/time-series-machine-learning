@@ -65,13 +65,16 @@ def predict_all_models(changes_df, name, accept):
 
 
 def main():
-  tickers = get_tickers(default=[])
-  period = 'day'
+  tickers, periods, targets = parse_command_line(default_tickers=[],
+                                                 default_periods=['day'],
+                                                 default_targets=['high'])
 
   for ticker in tickers:
-    raw_df = poloniex.get_latest_data(ticker, period=period, depth=100)
-    changes_df = to_changes(raw_df)
-    predict_all_models(changes_df, '%s_%s' % (ticker, period), lambda name: name.startswith('high_'))
+    for period in periods:
+      for target in targets:
+        raw_df = poloniex.get_latest_data(ticker, period=period, depth=100)
+        changes_df = to_changes(raw_df)
+        predict_all_models(changes_df, '%s_%s' % (ticker, period), lambda name: name.startswith('%s_' % target))
 
 
 if __name__ == '__main__':
