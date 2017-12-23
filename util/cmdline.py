@@ -8,7 +8,7 @@ import sys
 from logging import info, warn
 
 
-DEFAULT_TICKERS = ['BTC_ETH', 'BTC_XRP', 'BTC_DGB', 'BTC_STR', 'BTC_ZEC']
+DEFAULT_TICKERS = ['BTC_ETH', 'BTC_LTC', 'BTC_XRP', 'BTC_DGB', 'BTC_STR', 'BTC_ZEC']
 
 
 def get_tickers(default=DEFAULT_TICKERS):
