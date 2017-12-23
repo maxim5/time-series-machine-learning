@@ -9,8 +9,8 @@ import sys
 from logging import info, warn
 
 
-DEFAULT_TICKERS = ['BTC_ETH', 'BTC_LTC', 'BTC_XRP', 'BTC_DGB', 'BTC_STR', 'BTC_ZEC']
-DEFAULT_PERIODS = ['4h', 'day']
+DEFAULT_TICKERS = ['BTC_ETH', 'BTC_LTC', 'BTC_XRP', 'BTC_ZEC']
+DEFAULT_PERIODS = ['day']
 DEFAULT_TARGETS = ['high']
 
 
@@ -57,4 +57,6 @@ def parse_option(name, options, valid, default):
 
 
 def pretty_list(values):
+  if not values:
+    return '<empty list>'
   return ', '.join(['"%s"' % value for value in values])
