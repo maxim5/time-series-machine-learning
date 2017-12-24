@@ -25,7 +25,7 @@ To fetch the data, run `run_fetch.py` script from the root directory:
 
 ```sh
 # Fetches the default tickers: BTC_ETH, BTC_LTC, BTC_XRP, BTC_ZEC for all time periods.
-./run_fetch.py
+$ ./run_fetch.py
 ```
 
 By default, the data is fetched for all time periods available in Poloniex (day, 4h, 2h, 30m, 15m, 5m) 
@@ -33,7 +33,7 @@ and is stored in `_data` directory. One can specify the tickers and periods via 
 
 ```sh
 # Fetches just BTC_ETH ticker data for only 3 time periods.
-./run_fetch.py BTC_ETH --period=2h,4h,day
+$ ./run_fetch.py BTC_ETH --period=2h,4h,day
 ```
 
 **Note**: the second and following runs *won't* fetch all charts from scratch, but just the update from the last run till now.
@@ -49,10 +49,10 @@ To start training, run `run_train.py` script from the root directory:
 # - tickers: BTC_ETH, BTC_LTC, BTC_XRP, BTC_ZEC
 # - period: day
 # - target: high
-./run_train.py
+$ ./run_train.py
 
 # Trains the models for specified parameters.
-./run_train.py --period=4h --target=low BTC_BCH
+$ ./run_train.py --period=4h --target=low BTC_BCH
 ```
 
 By default, the script trains all available methods (see below) with random hyper-parameters, cross-validates each model and
@@ -137,7 +137,7 @@ have been saved for these currencies, period and target.
 ```sh
 # Runs all models for BTC_ETH ticker and outputs the aggregated prediction.
 # Default period: day, default target: high.
-./run_predict.py BTC_ETH
+$ ./run_predict.py BTC_ETH
 ```
 
 License
