@@ -6,6 +6,7 @@ import os
 import numpy as np
 
 from model import Model
+from util import vlog
 
 
 class LinearModel(Model):
@@ -24,8 +25,10 @@ class LinearModel(Model):
 
   def save(self, dest_dir):
     path = os.path.join(dest_dir, 'beta.npy')
+    vlog('Saving the model to:', path)
     np.save(path, self._beta)
 
   def restore(self, source_dir):
     path = os.path.join(source_dir, 'beta.npy')
+    vlog('Restoring the model from:', path)
     self._beta = np.load(path)

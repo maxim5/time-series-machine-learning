@@ -19,6 +19,12 @@ def set_verbose(level=1):
   global LOG_LEVEL
   LOG_LEVEL = -level
 
+def is_debug_logged():
+  return LOG_LEVEL <= 0
+
+def is_info_logged():
+  return LOG_LEVEL <= 1
+
 def debug(*msg):
   log_at_level(0, *msg)
 

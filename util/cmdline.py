@@ -6,7 +6,7 @@ __author__ = 'maxim'
 import re
 import sys
 
-from logging import info, warn
+from logging import debug, info, warn
 
 
 DEFAULT_TICKERS = ['BTC_ETH', 'BTC_LTC', 'BTC_XRP', 'BTC_ZEC']
@@ -20,6 +20,7 @@ def parse_command_line(default_tickers=DEFAULT_TICKERS,
   args = sys.argv[1:]
   options = [arg[2:].split('=') for arg in args if arg.startswith('--')]
   args = [arg for arg in args if not arg.startswith('--')]
+  debug('Parsing command line arguments:', args)
 
   # local import to avoid cyclic dependencies
   from poloniex.fetch_data import COLUMNS, PERIODS
