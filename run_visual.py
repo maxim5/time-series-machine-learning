@@ -38,10 +38,11 @@ def predict_multiple(job_info, last_rows):
     raw_predicted = (1 + prediction_change) * raw_targets[idx]
     debug('   value on %s: predict= %.5f target= %.5f' % (date, raw_predicted, raw_target))
 
-    result.append({'date': date, 'prediction': raw_predicted, 'target': raw_target})
+    result.append({'Time': date, 'Prediction': raw_predicted, 'True': raw_target})
 
   result_df = pd.DataFrame(result)
-  result_df = result_df.set_index('date')
+  result_df.set_index('Time', inplace=True)
+  result_df.index.names = ['']
   return result_df
 
 
@@ -55,15 +56,15 @@ def main():
     for period in periods:
       for target in targets:
         job = JobInfo('_data', '_zoo', name='%s_%s' % (ticker, period), target=target)
-        result_df = predict_multiple(job, last_rows=100)
+        result_df = predict_multiple(job, last_rows=120)
         result_df.plot(title=job.name)
 
         if train_date is not None:
           x = train_date
-          y = result_df.target.min()
+          y = result_df['True'].min()
           plt.axvline(x, color='k', linestyle='--')
-          # See also https://stackoverflow.com/questions/43842269/python-3-matplitlib-text-inside-vertical-line
-          plt.text(x, y, 'Training stop', color='k', ha='left', va='bottom')
+          plt.annotate('Training stop', xy=(x, y), xytext=(result_df.index.min(), y), color='k',
+                       arrowprops={'arrowstyle': "->", 'connectionstyle': 'arc3', 'color': 'k'})
 
   plt.show()
 
