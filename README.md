@@ -3,9 +3,10 @@
 A collection of different Machine Learning models predicting the time series, 
 concretely the market price for given the currency chart and target.
 
-![BTC_ETH](.images/btc_eth_prediction.png)
-
-![BTC_LTC](.images/btc_ltc_prediction.png)
+<p align="center"> 
+  <img src=".images/btc_eth_prediction.png" alt="BTC_ETH chart" width="100%"/>
+  <img src=".images/btc_ltc_prediction.png" alt="BTC_LTC chart" width="100%"/>
+</p>
 
 Requirements
 ------------
