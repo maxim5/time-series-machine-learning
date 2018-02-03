@@ -40,10 +40,10 @@ def update_ticker(ticker, period, dest_dir):
     assert start_time > 0
     df = pd.concat([existing_df[existing_df.date < start_time], new_df])
     df.to_csv(path, index=False, columns=COLUMNS)
-    info("Data frame updated: %s" % path)
+    info('Data frame updated: %s' % path)
   else:
     new_df.to_csv(path, index=False, columns=COLUMNS)
-    info("Data frame saved to %s" % path)
+    info('Data frame saved to %s' % path)
 
 
 def update_selected(tickers, periods=api.AVAILABLE_PERIODS, data_dir='_data', sleep=0.5):

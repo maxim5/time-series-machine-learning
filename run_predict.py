@@ -57,7 +57,7 @@ def predict_all_models(changes_df, name, accept):
       value = predict_model(changes_df, os.path.join(home_dir, model))
       predictions.append(value)
     except ModelNotAvailable as e:
-      warn('Cannot use model from \"%s\": class \"%s\" is not available not this system' % (model, e.model_class))
+      warn('Cannot use model from "%s": class "%s" is not available not this system' % (model, e.model_class))
       warn('Most probable reason is that model dependencies are not met')
   info()
   info('Mean predicted value for %s: %.5f' % (name, np.mean(predictions)))
