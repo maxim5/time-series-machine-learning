@@ -6,10 +6,8 @@ import os
 
 import numpy as np
 
-from predict import *
 from train.job_info import parse_model_infos
 from util import *
-
 from .model_io import get_model_info
 
 
