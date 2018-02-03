@@ -10,7 +10,7 @@ from models import *
 from util import *
 
 
-class ModelInfo:
+class ModelInfo(object):
   def __init__(self, path, model_class, model_params, run_params):
     self.path = path
     self.model_class = model_class
@@ -19,6 +19,9 @@ class ModelInfo:
 
   def is_available(self):
     return self.model_class is not None
+
+  def __repr__(self):
+    return repr({'path': self.path, 'class': self.model_class})
 
 
 def get_model_info(path, strict=True):

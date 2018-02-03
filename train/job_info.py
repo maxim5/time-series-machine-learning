@@ -58,9 +58,12 @@ def _parse_model_file(file_name):
 
   match = re.match('([a-z]+)_eval=([0-9.]+)_k=([0-9]+)(_\w*)?', file_name)
   if not match:
-    return {}
+    return {
+      'name': file_name,
+    }
 
   return {
+    'name': file_name,
     'target': match.group(1),
     'eval': float(match.group(2)),
     'k': int(match.group(3)),
