@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 from data_set import DataSet
-from logging import debug
+from logging import vlog
 
 pd.set_option('display.expand_frame_repr', False)
 
@@ -57,7 +57,7 @@ def to_dataset(df, k, target_column, with_bias):
     x[i] = row
     y[i] = target[i+k]
 
-  debug('Data set: x=%s y=%s' % (x.shape, y.shape))
+  vlog('Data set: x=%s y=%s' % (x.shape, y.shape))
   return DataSet(x, y)
 
 
@@ -76,7 +76,7 @@ def to_dataset_for_prediction(df, k, with_bias):
       row = np.insert(row, 0, 1)
     x[i] = row
 
-  debug('Data set for prediction:', x.shape)
+  vlog('Data set for prediction:', x.shape)
   return x
 
 
