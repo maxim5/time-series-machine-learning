@@ -85,6 +85,12 @@ Currently supported methods:
 - Deep neural network (in `tensorflow`).
 - Recurrent neural network: LSTM, GRU, one or multi-layered (in `tensorflow` as well).
 
+All models take as input a window of certain size (named `k`) and predict a single target value for the next time step. 
+Example:
+window size `k=10` means that the model accepts `(x[t-10], x[t-9], ..., x[t-1])` array to predict `x[t].target`. 
+Each of `x[i]` includes a number of features (open, close, volume, etc). Thus, the model takes `10 * features` values in
+and outputs a single value - percent change for the target column.
+
 Inspecting the model
 --------------------
 

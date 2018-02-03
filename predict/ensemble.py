@@ -44,12 +44,12 @@ class Ensemble(object):
       return predicted_changes
 
   @staticmethod
-  def ensemble_top_models(job_info, top_k=5):
+  def ensemble_top_models(job_info, top_n=5):
     home_dir = os.path.join(job_info.zoo_dir, '%s_%s' % (job_info.ticker, job_info.period))
     models = parse_model_infos(home_dir)
     models.sort(key=lambda d: d['eval'])
 
     model_paths = [os.path.join(home_dir, d['name']) for d in models]
     models = [get_model_info(path, strict=False) for path in model_paths]
-    top_models = [model for model in models if model.is_available()][:top_k]
+    top_models = [model for model in models if model.is_available()][:top_n]
     return Ensemble(top_models)
