@@ -26,7 +26,7 @@ Fetched data format is standard security [OHLC trading info](https://en.wikipedi
 date, high, low, open, close, volume, quoteVolume, weightedAverage.
 But the models are agnostic of the particular time series features and can be trained with sub- or superset of these features.
 
-To fetch the data, run `run_fetch.py` script from the root directory:
+To fetch the data, run [`run_fetch.py`](run_fetch.py) script from the root directory:
 
 ```sh
 # Fetches the default tickers: BTC_ETH, BTC_LTC, BTC_XRP, BTC_ZEC for all time periods.
@@ -46,7 +46,7 @@ $ ./run_fetch.py BTC_ETH --period=2h,4h,day
 Training the models
 -------------------
 
-To start training, run `run_train.py` script from the root directory:
+To start training, run [`run_train.py`](run_train.py) script from the root directory:
 
 ```sh
 # Trains all models until stopped.
@@ -97,9 +97,9 @@ Inspecting the model
 Saved models consist of the following files:
  - `run-params.txt`: each model has the following run parameters:
     - Ticker name, e.g., `BTC_ETH`.
-    - Time period, e.g. `4h`.
-    - Target column, e.g. `high` (means the model ies predicting the next high price).
-    - Model class, e.g. `RecurrentModel`.
+    - Time period, e.g., `4h`.
+    - Target column, e.g., `high` (means the model is predicting the next high price).
+    - Model class, e.g., `RecurrentModel`.
     - The `k` value, which denotes the input length, 
       e.g., `k=16` with `period=day` means the model needs 16 days to predict the next one.
  - `model-params.txt`: holds the specific hyper-parameters that the model was trained with.
@@ -137,13 +137,13 @@ You should read it like this:
    
 In the end, the report is summarized to one evaluation result, which is `mean_abs_error + risk_factor * sd_abs_error`.
 You can vary the `risk_factor` to prefer the models that are better or worse on average vs in the worst case. 
-By default, `risk_factor=1.0`, hence the model above is evaluated at `0.0433`.
+By default, `risk_factor=1.0`, hence the model above is evaluated at `0.0433`. Lower evaluation is better.
 
 Running predictions
 -------------------
 
-The `run_predict.py` script downloads the current trading data for the selected currencies and runs all models that 
-have been saved for these currencies, period and target.
+The [`run_predict.py`](run_predict.py) script downloads the current trading data for the selected currencies and
+runs all models that have been saved for these currencies, period and target.
 
 ```sh
 # Runs all models for BTC_ETH ticker and outputs the aggregated prediction.
