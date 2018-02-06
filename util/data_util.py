@@ -7,8 +7,8 @@ import datetime
 import numpy as np
 import pandas as pd
 
-from data_set import DataSet
-from logging import vlog
+from .data_set import DataSet
+from .logging import vlog
 
 pd.set_option('display.expand_frame_repr', False)
 
@@ -49,7 +49,7 @@ def to_dataset(df, k, target_column, with_bias):
   x = np.empty([windows_num, k * cols + int(with_bias)])
   y = np.empty([windows_num])
 
-  for i in xrange(windows_num):
+  for i in range(windows_num):
     window = df[i:i+k]
     row = window.as_matrix().reshape((-1,))
     if with_bias:
@@ -69,7 +69,7 @@ def to_dataset_for_prediction(df, k, with_bias):
   windows_num = n - k + 1
   x = np.empty([windows_num, k * cols + int(with_bias)])
 
-  for i in xrange(windows_num):
+  for i in range(windows_num):
     window = df[i:i+k]
     row = window.as_matrix().reshape((-1,))
     if with_bias:

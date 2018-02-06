@@ -6,7 +6,7 @@ __author__ = 'maxim'
 import re
 import sys
 
-from logging import debug, info, warn
+from .logging import debug, info, warn
 
 
 DEFAULT_TICKERS = ['BTC_ETH', 'BTC_LTC', 'BTC_XRP', 'BTC_ZEC']

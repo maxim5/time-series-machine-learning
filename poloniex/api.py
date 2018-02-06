@@ -7,6 +7,7 @@
 __author__ = 'maxim'
 
 
+from six import string_types
 import pandas as pd
 
 from util import *
@@ -31,7 +32,7 @@ def get_24h_volume():
 
 
 def period_to_human(period):
-  if isinstance(period, basestring):
+  if isinstance(period, string_types):
     return period
   if period == 300:
     return '5m'

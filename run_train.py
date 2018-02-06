@@ -36,7 +36,7 @@ def _random_layers(num):
     'batchnorm': np.random.choice([True, False]),
     'activation_func': np.random.choice(['relu', 'elu', 'sigmoid', 'leaky_relu', 'prelu']),
     'dropout': np.random.uniform(0.1, 0.95),
-  } for _ in xrange(num)]
+  } for _ in range(num)]
 
 
 def iterate_rnn(job_info, job_runner, iterations=10):
@@ -51,7 +51,7 @@ def iterate_rnn(job_info, job_runner, iterations=10):
       'batch_size': np.random.choice([1000, 2000, 4000]),
       'epochs': 100,
       'learning_rate': 10 ** np.random.uniform(-4, -2),
-      'layers': [np.random.choice([32, 64, 96]) for _ in xrange(np.random.randint(1, 4))],
+      'layers': [np.random.choice([32, 64, 96]) for _ in range(np.random.randint(1, 4))],
       'cell_type': np.random.choice(['lstm', 'gru']),
       'double_state': np.random.choice([True, False]),
       'dropout': np.random.uniform(0.0, 1.0),
@@ -65,7 +65,7 @@ def iterate_linear(job_info, job_runner, k_lim=25):
   if LinearModel is None:
     return
 
-  for k in xrange(1, k_lim):
+  for k in range(1, k_lim):
     job_runner.single_run(**{
       'target': job_info.target,
       'k': k,

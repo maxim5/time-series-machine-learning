@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+
 __author__ = 'maxim'
 
 
 import os
 
-from evaluator import Evaluator
+from .evaluator import Evaluator
 from util import *
 
 
@@ -72,7 +74,7 @@ class JobRunner(object):
 
 
   def iterate(self, iterations, params_fun):
-    for i in xrange(iterations):
+    for i in range(iterations):
       info('Iteration %s: %s #%d' % (self._job_info.name, self._job_info.target, i + 1))
       params = params_fun()
       self.single_run(**params)
@@ -113,4 +115,4 @@ def _resolve_limit(limit, job_info):
 def random_id(size):
   import string, random
   chars = string.ascii_letters + string.digits
-  return ''.join(random.choice(chars) for _ in xrange(size))
+  return ''.join(random.choice(chars) for _ in range(size))

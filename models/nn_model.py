@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+
 __author__ = 'maxim'
 
 
 import tensorflow as tf
 
-from tensorflow_model import TensorflowModel
-from nn_ops import ACTIVATIONS, COST_FUNCTIONS, dropout, batch_normalization
+from .tensorflow_model import TensorflowModel
+from .nn_ops import ACTIVATIONS, COST_FUNCTIONS, dropout, batch_normalization
 
 
 class NeuralNetworkModel(TensorflowModel):

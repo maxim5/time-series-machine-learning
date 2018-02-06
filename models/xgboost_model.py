@@ -6,7 +6,7 @@ import os
 from xgboost import XGBRegressor
 from sklearn.externals import joblib
 
-from model import Model
+from .model import Model
 from util import vlog
 
 
