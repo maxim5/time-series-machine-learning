@@ -20,7 +20,7 @@ def main():
         result_df = predict_multiple(job, raw_df=raw_df, rows_to_predict=1)
 
         raw_df.set_index('date', inplace=True)
-        result_df.rename(columns={"True": "Current-Truth"}, inplace=True)
+        result_df.rename(columns={'True': 'Current-Truth'}, inplace=True)
 
         info('Latest chart info:', raw_df.tail(2), '', sep='\n')
         info('Prediction for "%s":' % target, result_df, '', sep='\n')

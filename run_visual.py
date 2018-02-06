@@ -29,7 +29,7 @@ def main():
           y = result_df['True'].min()
           plt.axvline(x, color='k', linestyle='--')
           plt.annotate('Training stop', xy=(x, y), xytext=(result_df.index.min(), y), color='k',
-                       arrowprops={'arrowstyle': "->", 'connectionstyle': 'arc3', 'color': 'k'})
+                       arrowprops={'arrowstyle': '->', 'connectionstyle': 'arc3', 'color': 'k'})
 
   plt.show()
 
