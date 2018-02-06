@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 __author__ = 'maxim'
 
+from itertools import izip, count
 import os
 
 import numpy as np
+import pandas as pd
 
 from train.job_info import parse_model_infos
 from util import *
@@ -53,3 +55,32 @@ class Ensemble(object):
     models = [get_model_info(path, strict=False) for path in model_paths]
     top_models = [model for model in models if model.is_available()][:top_n]
     return Ensemble(top_models)
+
+
+def predict_multiple(job_info, raw_df, rows_to_predict, top_models_num=5):
+  debug('Predicting %s target=%s' % (job_info.name, job_info.target))
+
+  raw_targets = raw_df[job_info.target][-(rows_to_predict + 1):].reset_index(drop=True)
+  changes_df = to_changes(raw_df)
+  target_changes = changes_df[job_info.target][-rows_to_predict:].reset_index(drop=True)
+  dates = changes_df.date[-rows_to_predict:].reset_index(drop=True)
+
+  df = changes_df[:-1]  # the data for models is shifted by one: the target for the last row is unknown
+
+  ensemble = Ensemble.ensemble_top_models(job_info, top_n=top_models_num)
+  predictions = ensemble.predict_aggregated(df, last_rows=rows_to_predict)
+
+  result = []
+  for idx, date, prediction_change, target_change in izip(count(), dates, predictions, target_changes):
+    debug('%%-change on %s: predict=%+.5f target=%+.5f' % (date, prediction_change, target_change))
+
+    # target_change is approx. raw_targets[idx + 1] / raw_targets[idx] - 1.0
+    raw_target = raw_targets[idx + 1]
+    raw_predicted = (1 + prediction_change) * raw_targets[idx]
+    debug('   value on %s: predict= %.5f target= %.5f' % (date, raw_predicted, raw_target))
+
+    result.append({'Time': date, 'Prediction': raw_predicted, 'True': raw_target})
+
+  result_df = pd.DataFrame(result)
+  result_df.set_index('Time', inplace=True)
+  return result_df
