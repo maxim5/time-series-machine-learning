@@ -142,11 +142,12 @@ By default, `risk_factor=1.0`, hence the model above is evaluated at `0.0433`. L
 Running predictions
 -------------------
 
-The [`run_predict.py`](run_predict.py) script downloads the current trading data for the selected currencies and
-runs all models that have been saved for these currencies, period and target.
+The [`run_predict.py`](run_predict.py) script downloads the current trading data for the selected currencies and runs an ensemble of
+several best models (5 by default) that have been saved for these currencies, period and target. Result prediction is
+the aggregated value of constituent model predictions.
 
 ```sh
-# Runs all models for BTC_ETH ticker and outputs the aggregated prediction.
+# Runs ensemble of best models for BTC_ETH ticker and outputs the aggregated prediction.
 # Default period: day, default target: high.
 $ ./run_predict.py BTC_ETH
 ```
