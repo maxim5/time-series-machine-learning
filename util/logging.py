@@ -7,9 +7,10 @@ __author__ = 'maxim'
 
 LOG_LEVEL = 1
 
-def log(*msg):
+def log(*msg, **kwargs):
   import datetime
-  print('[%s]' % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), ' '.join([str(it) for it in msg]))
+  sep = kwargs.get('sep', ' ')
+  print('[%s]' % datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), sep.join([str(it) for it in msg]))
 
 def set_silence():
   global LOG_LEVEL
@@ -25,24 +26,24 @@ def is_debug_logged():
 def is_info_logged():
   return LOG_LEVEL <= 1
 
-def debug(*msg):
-  log_at_level(0, *msg)
+def debug(*msg, **kwargs):
+  log_at_level(0, *msg, **kwargs)
 
-def info(*msg):
-  log_at_level(1, *msg)
+def info(*msg, **kwargs):
+  log_at_level(1, *msg, **kwargs)
 
-def warn(*msg):
-  log_at_level(2, *msg)
+def warn(*msg, **kwargs):
+  log_at_level(2, *msg, **kwargs)
 
-def vlog(*msg):
-  log_at_level(-1, *msg)
+def vlog(*msg, **kwargs):
+  log_at_level(-1, *msg, **kwargs)
 
-def vlog2(*msg):
-  log_at_level(-2, *msg)
+def vlog2(*msg, **kwargs):
+  log_at_level(-2, *msg, **kwargs)
 
-def vlog3(*msg):
-  log_at_level(-3, *msg)
+def vlog3(*msg, **kwargs):
+  log_at_level(-3, *msg, **kwargs)
 
-def log_at_level(level, *msg):
+def log_at_level(level, *msg, **kwargs):
   if level >= LOG_LEVEL:
-    log(*msg)
+    log(*msg, **kwargs)
