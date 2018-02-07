@@ -2,7 +2,11 @@
 # -*- coding: utf-8 -*-
 __author__ = 'maxim'
 
-from itertools import izip, count
+try:
+  from itertools import izip as zip
+except ImportError:  # python 3.x
+  pass
+from itertools import count
 import os
 
 import numpy as np
@@ -71,7 +75,7 @@ def predict_multiple(job_info, raw_df, rows_to_predict, top_models_num=5):
   predictions = ensemble.predict_aggregated(df, last_rows=rows_to_predict)
 
   result = []
-  for idx, date, prediction_change, target_change in izip(count(), dates, predictions, target_changes):
+  for idx, date, prediction_change, target_change in zip(count(), dates, predictions, target_changes):
     debug('%%-change on %s: predict=%+.5f target=%+.5f' % (date, prediction_change, target_change))
 
     # target_change is approx. raw_targets[idx + 1] / raw_targets[idx] - 1.0

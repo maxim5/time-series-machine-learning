@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+
 __author__ = 'maxim'
 
 
@@ -7,7 +9,7 @@ import os
 import time
 import pandas as pd
 
-import api
+from . import api
 from util import *
 
 

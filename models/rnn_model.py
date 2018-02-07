@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+
 __author__ = 'maxim'
 
 
 import tensorflow as tf
 
-from nn_ops import COST_FUNCTIONS
-from tensorflow_model import TensorflowModel
+from .nn_ops import COST_FUNCTIONS
+from .tensorflow_model import TensorflowModel
 
 
 CELL_TYPES = {
@@ -22,7 +25,7 @@ class RecurrentModel(TensorflowModel):
     TensorflowModel.__init__(self, **params)
 
     self._time_steps = params.get('time_steps', 10)
-    self._features = self._features / self._time_steps  # because features are unrolled
+    self._features = int(self._features / self._time_steps)  # because features are unrolled
     self._layers = params.get('layers', [])
     self._cell_type = params.get('cell_type', 'lstm')
     self._double_state = params.get('double_state', False)

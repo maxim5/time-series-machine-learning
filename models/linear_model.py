@@ -1,11 +1,13 @@
 #!/usr/bin/env python
+from __future__ import absolute_import
+
 __author__ = 'maxim'
 
 
 import os
 import numpy as np
 
-from model import Model
+from .model import Model
 from util import vlog
 
 
