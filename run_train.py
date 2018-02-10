@@ -61,6 +61,28 @@ def iterate_rnn(job_info, job_runner, iterations=10):
   })
 
 
+def iterate_cnn(job_info, job_runner, iterations=10):
+  if ConvModel is None:
+    return
+
+  job_runner.iterate(iterations, params_fun=lambda: {
+    'target': job_info.target,
+    'k': np.random.choice([24, 32, 48, 64]),
+    'model_class': ConvModel,
+    'model_params': {
+      'batch_size': np.random.choice([1000, 2000, 4000]),
+      'epochs': 150,
+      'learning_rate': 10 ** np.random.uniform(-4, -2),
+      'layers': [(np.random.choice([32, 64, 96, 128]),
+                  np.random.randint(2, 6))
+                 for _ in range(np.random.randint(1, 4))],
+      'dropout': np.random.uniform(0.0, 0.7),
+      'cost_func': np.random.choice(['l1', 'l2']),
+      'lambda': 10 ** np.random.uniform(-10, -6),
+    }
+  })
+
+
 def iterate_linear(job_info, job_runner, k_lim=25):
   if LinearModel is None:
     return
@@ -105,6 +127,7 @@ def main():
           iterate_neural(job_info, job_runner)
           iterate_xgb(job_info, job_runner)
           iterate_rnn(job_info, job_runner)
+          iterate_cnn(job_info, job_runner)
           job_runner.print_result()
 
 

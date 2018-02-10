@@ -4,6 +4,11 @@ from __future__ import absolute_import
 __author__ = 'maxim'
 
 try:
+  from .cnn_model import ConvModel
+except ImportError:
+  ConvModel = None
+
+try:
   from .linear_model import LinearModel
 except ImportError:
   LinearModel = None
