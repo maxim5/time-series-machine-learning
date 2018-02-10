@@ -84,6 +84,7 @@ Currently supported methods:
 - Gradient boosting (using `xgboost` implementation).
 - Deep neural network (in `tensorflow`).
 - Recurrent neural network: LSTM, GRU, one or multi-layered (in `tensorflow` as well).
+- Convolutional neural network for 1-dimensional data (in `tensorflow` as well).
 
 All models take as input a window of certain size (named `k`) and predict a single target value for the next time step. 
 Example:
