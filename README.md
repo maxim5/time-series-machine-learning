@@ -11,7 +11,8 @@ concretely the market price for given the currency chart and target.
 Requirements
 ------------
 
-Required dependency: `numpy`. Other dependencies are optional, but to diversify the final models ensemble, 
+Required dependency: `numpy`. Other dependencies are optional, 
+but to diversify the final models ensemble, 
 it's recommended to install these packages:  `tensorflow`, `xgboost`.
 
 Tested with python versions: 2.7.14, 3.6.0.
